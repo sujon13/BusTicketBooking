@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Number of Buses: <h1>{{ number_of_buses }}</h1>
+{% for bus in busList %}
+        id: {{ bus.id }}, operator_name: {{ bus.operator_name }}
+    {% endfor %}
+</body>
+</html>
