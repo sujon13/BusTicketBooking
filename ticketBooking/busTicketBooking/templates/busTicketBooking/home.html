@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/nav.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/footer.css' %}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<!-- Here add nav -->
+{% include "busTicketBooking/nav.html" %}
+
+<div class="container">
+    <table class="containertable">
+      <tr>
+        <td class="containerform">
+          <form action="{% url 'home' %}" method="get">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="fieldWrapper">
+                    {{ field.errors }}
+                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <input type="submit" name="SearchBus" value="Search Buses">
+          </form>
+        </td>
+
+        <td class="containertext">
+          <span style="font-weight: bold;">Welcome to</span><br>
+          Bus<br>
+          E-Ticketing Service<br>
+        </td>
+      </tr>
+    </table>
+</div>
+
+<!-- Here add footer -->
+{% include "busTicketBooking/footer.html" %}
+
+</body>
+</html>

@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{{ number_of_buses }}
+{% for trip in tripList %}
+    <p>start: {{ trip.start_station }} end: {{ trip.end_station }}, time: {{ trip.start_time }} </p>
+{% endfor %}
+</body>
+</html>

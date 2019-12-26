@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .button {
+          padding: 15px 25px;
+          font-size: 24px;
+          text-align: center;
+          cursor: pointer;
+          outline: none;
+          color: #fff;
+          background-color: #4CAF50;
+          border: none;
+          border-radius: 15px;
+          box-shadow: 0 9px #999;
+        }
+
+        .button:hover {background-color: #3e8e41}
+
+        .button:active {
+          background-color: #3e8e41;
+          box-shadow: 0 5px #666;
+          transform: translateY(4px);
+        }
+    </style>
+</head>
+<body>
+<p>num of rows: {{ seat.num_of_rows }}</p>
+<ul style="list-style-type:none;">
+  <li>
+      <ul style="list-style-type:none; float: left;">
+          <li><button class="button">{{ seat.A1 }}</button></li><br>
+          <li><button class="button">{{ seat.A2 }}</button></li><br>
+          <li><button class="button">{{ seat.A3 }}</button></li><br>
+          <li><button class="button">{{ seat.A4 }}</button></li>
+      </ul>
+  </li>
+
+</ul>
+<p id = "demo">click</p>
+<script>
+    document.getElementById("demo").innerHTML = "Hello JavaScript!";
+</script>
+</body>
+</html>
