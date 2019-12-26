@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
-from .models import Bus, Trip
+from .models import Bus, Trip, Seat
 from .forms import NameForm, SearchBus
 from datetime import datetime
 
@@ -31,10 +31,118 @@ def get_trip_list(start_station, end_station, date_of_journey):
     # string to date
     journey_date = datetime.strptime(date_of_journey, "%Y-%m-%d").date()
 
-    trip_list = Trip.objects.filter(start_station__icontains=start_station,
-                                    end_station__icontains=end_station,
-                                    start_time__date=journey_date)
+    trip_list = Trip.objects.filter(
+        start_station__icontains=start_station,
+        end_station__icontains=end_station,
+        start_time__date=journey_date
+    ).order_by('start_time__time')
+
+    return adding_available_seat_to_trip(trip_list)
+
+
+def adding_available_seat_to_trip(trip_list):
+    for trip in trip_list:
+        num_of_available_seats = get_num_of_available_seats(trip.bus.seat.id)
+        trip.seat = num_of_available_seats
     return trip_list
+
+
+def get_num_of_available_seats(seat_id):
+    seat = Seat.objects.get(pk=seat_id)
+    num = 0
+    if seat.A1 == 'AVAILABLE':
+        num += 1
+    if seat.A2 == 'AVAILABLE':
+        num += 1
+    if seat.A3 == 'AVAILABLE':
+        num += 1
+    if seat.A4 == 'AVAILABLE':
+        num += 1
+
+    if seat.B1 == 'AVAILABLE':
+        num += 1
+    if seat.B2 == 'AVAILABLE':
+        num += 1
+    if seat.B3 == 'AVAILABLE':
+        num += 1
+    if seat.B4 == 'AVAILABLE':
+        num += 1
+
+    if seat.C1 == 'AVAILABLE':
+        num += 1
+    if seat.C2 == 'AVAILABLE':
+        num += 1
+    if seat.C3 == 'AVAILABLE':
+        num += 1
+    if seat.C4 == 'AVAILABLE':
+        num += 1
+
+    if seat.D1 == 'AVAILABLE':
+        num += 1
+    if seat.D2 == 'AVAILABLE':
+        num += 1
+    if seat.D3 == 'AVAILABLE':
+        num += 1
+    if seat.D4 == 'AVAILABLE':
+        num += 1
+
+    if seat.E1 == 'AVAILABLE':
+        num += 1
+    if seat.E2 == 'AVAILABLE':
+        num += 1
+    if seat.E3 == 'AVAILABLE':
+        num += 1
+    if seat.E4 == 'AVAILABLE':
+        num += 1
+
+    if seat.F1 == 'AVAILABLE':
+        num += 1
+    if seat.F2 == 'AVAILABLE':
+        num += 1
+    if seat.F3 == 'AVAILABLE':
+        num += 1
+    if seat.F4 == 'AVAILABLE':
+        num += 1
+
+    if seat.G1 == 'AVAILABLE':
+        num += 1
+    if seat.G2 == 'AVAILABLE':
+        num += 1
+    if seat.G3 == 'AVAILABLE':
+        num += 1
+    if seat.G4 == 'AVAILABLE':
+        num += 1
+
+    if seat.H1 == 'AVAILABLE':
+        num += 1
+    if seat.H2 == 'AVAILABLE':
+        num += 1
+    if seat.H3 == 'AVAILABLE':
+        num += 1
+    if seat.H4 == 'AVAILABLE':
+        num += 1
+
+    if seat.I1 == 'AVAILABLE':
+        num += 1
+    if seat.I2 == 'AVAILABLE':
+        num += 1
+    if seat.I3 == 'AVAILABLE':
+        num += 1
+    if seat.I4 == 'AVAILABLE':
+        num += 1
+
+    if seat.J1 == 'AVAILABLE':
+        num += 1
+    if seat.J2 == 'AVAILABLE':
+        num += 1
+    if seat.J3 == 'AVAILABLE':
+        num += 1
+    if seat.J4 == 'AVAILABLE':
+        num += 1
+    if seat.J5 == 'AVAILABLE':
+        num += 1
+
+    return num
 
 
 def seat(request, bus_id):
