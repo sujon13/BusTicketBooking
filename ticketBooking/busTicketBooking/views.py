@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
-
+from django.http import HttpResponseRedirect, HttpResponse
+import  json
 from .models import Bus, Trip, Seat
 from .forms import NameForm, SearchBus
 from datetime import datetime
@@ -174,3 +174,23 @@ def get_name(request):
 
 def thanks(request):
     return render(request, 'busTicketBooking/thanks.html')
+
+
+def get_station(request):
+    if request.is_ajax():
+        # q = request.GET.get('term', '')
+        q = 'dha'
+        print('q: ' + q)
+        trips = Trip.objects.filter(start_station__icontains=q).order_by('start_station')
+
+
+        # stations.append(Trip.objects.filter(end_station__icontains=q))
+        results = []
+        for trip in trips:
+            results.append(trip.start_station)
+        print('result: ' + str(results))
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

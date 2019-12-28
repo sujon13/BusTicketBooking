@@ -3,44 +3,98 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Title</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/style.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/nav.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'busTicketBooking/bootstrap/js/bootstrap.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/home.css' %}">
+    {% comment %}<link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/nav.css' %}">{% endcomment %}
     <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/footer.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- jQuery !-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- jQuery UI !-->
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+    <style type="text/css">
+        .navbar{
+          position: fixed;
+          top: 0px;
+          width: 100%;
+        }
+  </style>
 </head>
-<body>
-<!-- Here add nav -->
-{% include "busTicketBooking/nav.html" %}
+<body style="background-image: url({% static 'busTicketBooking/images/bus.jpg' %});">
+    {% comment %}<div class="jumbotron-background">
+        <img src="{% static 'busTicketBooking/images/bus.jpg' %}" class="blur ">
+    </div>{% endcomment %}
 
-<div class="container">
-    <table class="containertable">
-      <tr>
-        <td class="containerform">
-          <form action="{% url 'home' %}" method="get">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="fieldWrapper">
-                    {{ field.errors }}
-                    <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                    {{ field }}
-                </div>
-            {% endfor %}
-            <input type="submit" name="SearchBus" value="Search Buses">
-          </form>
-        </td>
+    <nav class="navbar navbar-inverse" style="width: 100%; position: fixed; top: 0px; overflow:hidden;">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                </button>
+            <a class="navbar-brand" href="#" style="color: darkorange; font-weight: bold;">Online Ticket Booking</a>
+            </div>
+            <div class="collapse navbar-collapse" id="myNavbar">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="active"><a href="#"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+                    <li><a href="#">Cancel Ticket</a></li>
+                    <li><a href="#">Bus Reservation</a></li>
+                    <li><a href="#">Verify Ticket</a></li>
+                    <li><a href="#"> Contact Us</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-        <td class="containertext">
-          <span style="font-weight: bold;">Welcome to</span><br>
-          Bus<br>
-          E-Ticketing Service<br>
-        </td>
-      </tr>
-    </table>
-</div>
+    <div class="container" >
+        <div class="row">
+            <div class="col-sm-6 containertext">
+                <span style="font-weight: bold;">Welcome to</span><br>
+                Bus<br>
+                E-Ticketing<br>
+                Service<br>
+            </div>
+            <div class="col-sm-6 containerform">
+                <form  autocomplete="off" action="{% url 'home' %}" method="get">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        <div class="fieldWrapper">
+                            {{ field.errors }}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <input type="submit" name="SearchBus" value="Search Buses"><br>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
 
-<!-- Here add footer -->
-{% include "busTicketBooking/footer.html" %}
+        $(function() {
+            var station_list = [
+                'Dhaka',
+                'Khulna',
+                'Chattagram',
+                'Barisal',
+                'Sylhet'
+            ];
+            $("#id_start_station, #id_end_station").autocomplete({
+                {% comment %}source: "{% url 'get_station' %}"{% endcomment %}
+                source: station_list
+            });
+        });
+
+    </script>
+
+    <!-- Here add footer -->
+    {% include "busTicketBooking/footer.html" %}
 
 </body>
 </html>

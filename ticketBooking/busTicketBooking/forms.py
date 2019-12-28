@@ -6,9 +6,26 @@ class NameForm(forms.Form):
 
 
 class SearchBus(forms.Form):
-    start_station = forms.CharField(label='From', max_length=15)
-    end_station = forms.CharField(label='To', max_length=15)
-    date_of_journey = forms.DateField(label='Date of Journey',
-                                      widget=forms.widgets.DateInput(attrs={'type': 'date'}))
+    start_station = forms.CharField(
+        label='From',
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'From'}
+        )
+    )
+    end_station = forms.CharField(
+        label='To',
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'To'}
+        )
+    )
+    date_of_journey = forms.DateField(
+        label='Date of Journey',
+        widget=forms.widgets.DateInput(
+            attrs={'type': 'date'}
+        )
+    )
+
 
 

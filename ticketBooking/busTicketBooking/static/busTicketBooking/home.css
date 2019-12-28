@@ -1,0 +1,80 @@
+*{margin:0px; padding: 0px; }
+body{}
+    body{
+  background-image: url("../images/bus2.jpg"); 
+  }
+/*.jumbotron-background {
+    object-fit:cover;
+    font-family: 'object-fit: cover;';
+    position:absolute;
+    top:0;
+    z-index:0;
+    width:100%;
+    opacity:1;
+}
+img.blur {
+    -webkit-filter: blur(4px);
+    filter: blur(4px);
+    filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='4');
+
+}*/
+
+.container{
+    padding-top: 5%;
+}
+
+.containerform{
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0, 0.4);
+    border:1px solid rgba(0,0,0,0.1);
+    border-radius:3px;
+    color: white;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    padding-top: 2%;
+    padding-bottom: 2%;
+}
+
+form{
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.containertext{
+    text-align: center;
+    font-size: 5vw;
+    font-weight: bold;
+    /*padding-left: 10%;*/
+    color: darkgreen;
+    font-weight: bold;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    /*padding-top: 2%;
+    padding-bottom: 2%;*/
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+    color: #000000;
+}
+
+input[type=date] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0px;
+    box-sizing: border-box;
+    color: #000000;
+}
+
+input[type=submit] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    border: none;
+    background-color: darkgreen;
+}
+    
