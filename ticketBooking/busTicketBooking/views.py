@@ -25,12 +25,21 @@ def home(request):
 
 
 # helper function for home.html
-def get_trip_list(start_station, end_station, date_of_journey):
-    # date to string
-    date_of_journey = datetime.strftime(date_of_journey, '%Y-%m-%d')
-    # string to date
-    journey_date = datetime.strptime(date_of_journey, "%Y-%m-%d").date()
 
+def convert_string_to_date(date_of_journey):
+    # string to date
+    journey_date = datetime.strptime(date_of_journey, "%m/%d/%Y").date()
+    # date to string(in format: %Y-%m-%d)
+    journey_date = journey_date.strftime("%Y-%m-%d")
+
+    # string to date(in format: %Y-%m-%d)
+    return datetime.strptime(journey_date, "%Y-%m-%d").date()
+
+
+def get_trip_list(start_station, end_station, date_of_journey):
+    # string is in %m/%d/%Y format
+    # But we need to date in %Y-%m-%d format
+    journey_date = convert_string_to_date(date_of_journey)
     trip_list = Trip.objects.filter(
         start_station__icontains=start_station,
         end_station__icontains=end_station,

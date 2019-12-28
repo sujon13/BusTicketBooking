@@ -20,10 +20,17 @@ class SearchBus(forms.Form):
             attrs={'placeholder': 'To'}
         )
     )
-    date_of_journey = forms.DateField(
+    # date_of_journey = forms.DateField(
+    #    label='Date of Journey',
+    #    widget=forms.widgets.DateInput(
+    #        attrs={'type': 'date'}
+    #    )
+    # )
+    date_of_journey = forms.CharField(
         label='Date of Journey',
-        widget=forms.widgets.DateInput(
-            attrs={'type': 'date'}
+        max_length=15,
+        widget=forms.TextInput(
+            attrs={'placeholder': 'Pick a date'}
         )
     )
 

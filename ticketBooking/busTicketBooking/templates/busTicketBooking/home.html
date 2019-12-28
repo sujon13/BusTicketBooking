@@ -8,7 +8,6 @@
     <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/bootstrap/css/bootstrap.min.css' %}">
     <script src="{% static 'busTicketBooking/bootstrap/js/bootstrap.min.js' %}"></script>
     <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/home.css' %}">
-    {% comment %}<link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/nav.css' %}">{% endcomment %}
     <link rel="stylesheet" type="text/css" href="{% static 'busTicketBooking/footer.css' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- jQuery !-->
@@ -87,8 +86,18 @@
             ];
             $("#id_start_station, #id_end_station").autocomplete({
                 {% comment %}source: "{% url 'get_station' %}"{% endcomment %}
-                source: station_list
+                source: station_list.sort()
             });
+        });
+
+        var date = new Date();
+        var today = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        var futureDate = new Date(date.getFullYear(), date.getMonth() + 2, date.getDate());
+
+        $('#id_date_of_journey').datepicker({
+            format: 'yyyy/mm/dd',
+            minDate: today,
+            maxDate: futureDate
         });
 
     </script>
