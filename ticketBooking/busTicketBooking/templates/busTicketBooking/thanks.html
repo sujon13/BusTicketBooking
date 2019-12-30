@@ -1,13 +1,197 @@
+
+{% comment %}{% extends "busTicketBooking/base.html" %}{% endcomment %}
+{% load static %}
+{% comment %}
+{% block title %}Home{% endblock title %}
+
+{% block css %}
+
+{% endblock css %}
+{% endcomment %}
+
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<style>
+
+#seat-row1 li, #seat-row2 li, #seat-row3 li, #seat-row4 li, #seat-row5 li,
+#seat-row6 li, #seat-row7 li, #seat-row8 li, #seat-row9 li, #seat-row10 li {
+  display:inline;
+  list-style-type:none;
+}
+#seat li {
+    //display:inline;
+    list-style-type:none;
+}
+.button {
+    {% comment %}background-color: #ffffff;{% endcomment %}
+    border: 2px solid #101210;
+    padding: 15px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+}
+</style>
 </head>
+
 <body>
-{{ number_of_buses }}
-{% for trip in tripList %}
-    <p>start: {{ trip.start_station }} end: {{ trip.end_station }}, time: {{ trip.start_time }} seat: {{ trip.seat }}</p>
-{% endfor %}
+
+<h2>Seat</h2>
+<ul id="seat">
+    	<ul id="seat-row1">
+            <li><button data-toggle="tooltip" data-placement="top" title="A1" id="A1" onclick="myFunction(id)" class="button"></button></li>
+            <li><button data-toggle="tooltip" data-placement="top" title="A2" id="A2" onclick="myFunction(id)" class="button"></button></li>
+            <li><button data-toggle="tooltip" data-placement="top" title="A3" id="A3" onclick="myFunction(id)" class="button"></button></li>
+            <li><button data-toggle="tooltip" data-placement="top" title="A4" id="A4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row2">
+  			<li><button data-toggle="tooltip" data-placement="top" title="B1" id="B1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="B2" id="B2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="B3" id="B3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="B4" id="B4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row3">
+  			<li><button data-toggle="tooltip" data-placement="top" title="C1" id="C1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="C2" id="C2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="C3" id="C1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="C4" id="C2" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row4">
+  			<li><button data-toggle="tooltip" data-placement="top" title="D1" id="D1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="D2" id="D2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="D3" id="D3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="D4" id="D4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row5">
+  			<li><button data-toggle="tooltip" data-placement="top" title="E1" id="E1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="E2" id="E2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="E3" id="E3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="E4" id="E4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row6">
+  			<li><button data-toggle="tooltip" data-placement="top" title="F1" id="F1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="F2" id="F2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="F3" id="F3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="F4" id="F4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row7">
+  			<li><button data-toggle="tooltip" data-placement="top" title="G1" id="G1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="G2" id="G2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="G3" id="G3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="G4" id="G4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row8">
+  			<li><button data-toggle="tooltip" data-placement="top" title="H1" id="H1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="H2" id="H2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="H3" id="H3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="H4" id="H4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row9">
+  			<li><button data-toggle="tooltip" data-placement="top" title="I1" id="I1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="I2" id="I2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="I3" id="I3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="I4"  id="I4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+    <li>
+    	<ul id="seat-row10">
+  			<li><button data-toggle="tooltip" data-placement="top" title="J1" id="J1" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="J2" id="J2" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="J3" id="J3" onclick="myFunction(id)" class="button"></button></li>
+  			<li><button data-toggle="tooltip" data-placement="top" title="J4" id="J4" onclick="myFunction(id)" class="button"></button></li>
+		</ul>
+    </li>
+
+</ul>
+<script>
+    var seatInfo = JSON.parse("{{ seat_info|escapejs }}");
+    $(document).ready(function(){
+      $('[data-toggle="tooltip"]').tooltip();
+    });
+
+    function initialFunction() {
+        setColor("A1", seatInfo.A1); setColor("A2", seatInfo.A2); setColor("A3", seatInfo.A3); setColor("A4", seatInfo.A4);
+        setColor("B1", seatInfo.B1); setColor("B2", seatInfo.B2); setColor("B3", seatInfo.B3); setColor("B4", seatInfo.B4);
+        setColor("C1", seatInfo.C1); setColor("C2", seatInfo.C2); setColor("C3", seatInfo.C3); setColor("C4", seatInfo.C4);
+        setColor("D1", seatInfo.D1); setColor("D2", seatInfo.D2); setColor("D3", seatInfo.D3); setColor("D4", seatInfo.D4);
+        setColor("E1", seatInfo.E1); setColor("E2", seatInfo.E2); setColor("E3", seatInfo.E3); setColor("E4", seatInfo.E4);
+        setColor("F1", seatInfo.F1); setColor("F2", seatInfo.F2); setColor("F3", seatInfo.F3); setColor("F4", seatInfo.F4);
+        setColor("G1", seatInfo.G1); setColor("G2", seatInfo.G2); setColor("G3", seatInfo.G3); setColor("G4", seatInfo.G4);
+        setColor("H1", seatInfo.H1); setColor("H2", seatInfo.H2); setColor("H3", seatInfo.H3); setColor("H4", seatInfo.H4);
+        setColor("I1", seatInfo.I1); setColor("I2", seatInfo.I2); setColor("I3", seatInfo.I3); setColor("I4", seatInfo.I4);
+        setColor("J1", seatInfo.J1); setColor("J2", seatInfo.J2); setColor("J3", seatInfo.J3); setColor("J4", seatInfo.J4);
+    }
+    initialFunction();
+
+    function setColor(id, seatType) {
+        var color;
+        switch (seatType) {
+            case 'AVAILABLE':
+                color = "#ffffff";
+                break;
+            case 'BOOKED':
+                color = "#e9f542";
+                break;
+            case 'SOLD':
+                color = "#d90804";
+                break;
+            case 'DISABLED':
+                color = "#59504f";
+                break;
+            default:
+                color = "#000000";
+        }
+        document.getElementById(id).style.backgroundColor = color;
+    }
+
+    var cnt = 1;
+    function myFunction(id) {
+
+        var element = document.getElementById(id);
+        if(cnt == 1) {
+            element.style.backgroundColor = "#09eb20";// green
+            cnt = 0;
+        }
+        else {
+            element.style.backgroundColor = "#0c26cf";// blue
+            cnt = 1;
+        }
+    }
+</script>
+
 </body>
 </html>
+
+

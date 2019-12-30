@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
-import  json
+import json
 from .models import Bus, Trip, Seat
 from .forms import NameForm, SearchBus
 from datetime import datetime
@@ -14,8 +14,9 @@ def home(request):
         end_station = form.cleaned_data['end_station']
         date_of_journey = form.cleaned_data['date_of_journey']
         trip_list = get_trip_list(start_station, end_station, date_of_journey)
-
-        context = {'number_of_buses': trip_list.count(), 'tripList': trip_list}
+        seat_info = get_seat_info(trip_list[0].bus.seat.id)
+        context = {'number_of_buses': trip_list.count(), 'trip': trip_list[0],
+                   'seat_info': json.dumps(seat_info)}
         return render(request, 'busTicketBooking/thanks.html', context)
 
     else:
@@ -54,6 +55,62 @@ def adding_available_seat_to_trip(trip_list):
         num_of_available_seats = get_num_of_available_seats(trip.bus.seat.id)
         trip.seat = num_of_available_seats
     return trip_list
+
+
+def get_seat_info(seat_id):
+    seat = Seat.objects.get(pk=seat_id)
+    seat_info = dict()
+    seat_info["A1"] = seat.A1
+    seat_info["A2"] = seat.A2
+    seat_info["A3"] = seat.A3
+    seat_info["A4"] = seat.A4
+
+    seat_info["B1"] = seat.B1
+    seat_info["B2"] = seat.B2
+    seat_info["B3"] = seat.B3
+    seat_info["B4"] = seat.B4
+
+    seat_info["C1"] = seat.C1
+    seat_info["C2"] = seat.C2
+    seat_info["C3"] = seat.C3
+    seat_info["C4"] = seat.C4
+
+    seat_info["D1"] = seat.D1
+    seat_info["D2"] = seat.D2
+    seat_info["D3"] = seat.D3
+    seat_info["D4"] = seat.D4
+
+    seat_info["E1"] = seat.E1
+    seat_info["E2"] = seat.E2
+    seat_info["E3"] = seat.E3
+    seat_info["E4"] = seat.E4
+
+    seat_info["F1"] = seat.F1
+    seat_info["F2"] = seat.F2
+    seat_info["F3"] = seat.F3
+    seat_info["F4"] = seat.F4
+
+    seat_info["G1"] = seat.G1
+    seat_info["G2"] = seat.G2
+    seat_info["G3"] = seat.G3
+    seat_info["G4"] = seat.G4
+
+    seat_info["H1"] = seat.H1
+    seat_info["H2"] = seat.H2
+    seat_info["H3"] = seat.H3
+    seat_info["H4"] = seat.H4
+
+    seat_info["I1"] = seat.I1
+    seat_info["I2"] = seat.I2
+    seat_info["I3"] = seat.I3
+    seat_info["I4"] = seat.I4
+
+    seat_info["J1"] = seat.J1
+    seat_info["J2"] = seat.J2
+    seat_info["J3"] = seat.J3
+    seat_info["J4"] = seat.J4
+
+    return seat_info
 
 
 def get_num_of_available_seats(seat_id):
