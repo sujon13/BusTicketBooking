@@ -37,6 +37,11 @@
     margin: 4px 2px;
     cursor: pointer;
 }
+p {
+    border: 1px solid gray;
+    background-color: #e4e7ed;
+    color: #0f0f0f;
+}
 </style>
 </head>
 
@@ -45,11 +50,36 @@
     var seatInfo = JSON.parse("{{ seat_info|escapejs }}");
     var cnt = {};
     $(document).ready(function(){
-      $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="tooltip"]').tooltip({
+            trigger : 'hover'
+        });
     });
 
     function myFunction(id) {
+        // if 4 seats have been chosen and it is new seat no more seat can be selected
+        var table = document.getElementById("selected-seat");
+        if(table.rows.length == 5 && cnt[id] == 1) {
+            alert("You have already booked 4 seats");
+            return;
+        }
 
+        changeColor(id);
+
+        // we only add row if it is new and total selected seats is less than 4
+        // if it is new its color will be change. so now cnt[id] = 0
+        if(table.rows.length < 5 && cnt[id] == 0)addRow(id, {{ trip.fare }});
+        else {
+            // we can deselect previously selected row
+            for(var i = 1; i < table.rows.length; i++) {
+                if(table.rows[i].cells[0].innerHTML == id) {
+                    table.deleteRow(i);
+                    break;
+                }
+            }
+        }
+        document.getElementById("total-fare").innerText = "Total Fare: " + (table.rows.length -1) * {{ trip.fare }} + " Taka";
+    }
+    function changeColor(id) {
         var element = document.getElementById(id);
         if(cnt[id] == 1) {
             element.style.backgroundColor = "#09eb20";// green
@@ -72,6 +102,10 @@
                 color = "#ffffff";
                 element.addEventListener("click", function() {
                     myFunction(id);
+                    /*// if 4 seats have been chosen no more seat can be selected
+                    if(document.getElementById("selected-seat").rows.length < 5) {
+                        myFunction(id);
+                    }*/
                 });
                 break;
             case 'BOOKED':
@@ -88,24 +122,56 @@
         }
         element.style.backgroundColor = color;
     }
+    function addRow(content, morecontent)
+    {
+         if (!document.getElementsByTagName) return;
+         tabBody=document.getElementsByTagName("tbody").item(0);
+         row=document.createElement("tr");
+         cell1 = document.createElement("td");
+         cell2 = document.createElement("td");
+         textnode1=document.createTextNode(content);
+         textnode2=document.createTextNode(morecontent);
+         cell1.appendChild(textnode1);
+         cell2.appendChild(textnode2);
+         row.appendChild(cell1);
+         row.appendChild(cell2);
+         tabBody.appendChild(row);
+    }
 </script>
-<h2>Seat</h2>
-<ul id="seat">
-    {% for row in "ABCDEFGHIJ" %}
-        <li>
-            <ul id="seat-row">
-                {% for col in "1234" %}
-                    <li><button data-toggle="tooltip" data-placement="top" id="{{ row|add:col }}" class="button"></button>
-                    <script>
-                        id = "{{ row|add:col }}";
-                        setColor(id, seatInfo[id]);
-                    </script>
-                    </li>
-                {% endfor %}
-            </ul>
-        </li>
-    {% endfor %}
-</ul>
+<div class="container-fluid">
+
+    <div class="col-sm-4" style="margin-top: 10px">
+        <ul id="seat">
+        {% for row in "ABCDEFGHIJ" %}
+            <li>
+                <ul id="seat-row">
+                    {% for col in "1234" %}
+                        <li><button data-toggle="tooltip" data-placement="top" id="{{ row|add:col }}" class="button"></button>
+                        <script>
+                            id = "{{ row|add:col }}";
+                            setColor(id, seatInfo[id]);
+                        </script>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+        </ul>
+    </div>
+    <div class="col-sm-4" style="margin-top: 20px">
+        <table class="table" id="selected-seat">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Seats</th>
+                    <th scope="col">Fare</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+        <p id="total-fare">Total Fare: 0 Taka</p>
+    </div>
+</div>
 
 </body>
 </html>
