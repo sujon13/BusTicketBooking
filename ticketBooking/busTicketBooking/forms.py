@@ -13,7 +13,7 @@ class SearchBus(forms.Form):
             attrs={'placeholder': 'From'}
         )
     )
-    end_station = forms.CharField(
+    destination = forms.CharField(
         label='To',
         max_length=15,
         widget=forms.TextInput(

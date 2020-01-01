@@ -5,15 +5,15 @@ from .models import Bus, Trip, Seat
 from .forms import NameForm, SearchBus
 from datetime import datetime
 
-
+"""
 def home(request):
     # create a form instance and populate it with data from the request:
     form = SearchBus(request.GET)
     if form.is_valid():
         start_station = form.cleaned_data['start_station']
-        end_station = form.cleaned_data['end_station']
+        destination = form.cleaned_data['destination']
         date_of_journey = form.cleaned_data['date_of_journey']
-        trip_list = get_trip_list(start_station, end_station, date_of_journey)
+        trip_list = get_trip_list(start_station, destination, date_of_journey)
         seat_info = get_seat_info(trip_list[0].bus.seat.id)
         context = {'number_of_buses': trip_list.count(), 'trip': trip_list[0],
                    'seat_info': json.dumps(seat_info)}
@@ -37,13 +37,13 @@ def convert_string_to_date(date_of_journey):
     return datetime.strptime(journey_date, "%Y-%m-%d").date()
 
 
-def get_trip_list(start_station, end_station, date_of_journey):
+def get_trip_list(start_station, destination, date_of_journey):
     # string is in %m/%d/%Y format
     # But we need to date in %Y-%m-%d format
     journey_date = convert_string_to_date(date_of_journey)
     trip_list = Trip.objects.filter(
         start_station__icontains=start_station,
-        end_station__icontains=end_station,
+        destination__icontains=destination,
         start_time__date=journey_date
     ).order_by('start_time__time')
 
@@ -249,8 +249,6 @@ def get_station(request):
         print('q: ' + q)
         trips = Trip.objects.filter(start_station__icontains=q).order_by('start_station')
 
-
-        # stations.append(Trip.objects.filter(end_station__icontains=q))
         results = []
         for trip in trips:
             results.append(trip.start_station)
@@ -260,3 +258,5 @@ def get_station(request):
         data = 'fail'
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+"""
