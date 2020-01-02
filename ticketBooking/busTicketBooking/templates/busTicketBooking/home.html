@@ -44,7 +44,7 @@
             'Barisal',
             'Sylhet'
         ];
-        $("#id_start_station, #id_end_station").autocomplete({
+        $("#id_start_station, #id_destination").autocomplete({
             {% comment %}source: "{% url 'get_station' %}"{% endcomment %}
             source: station_list.sort()
         });

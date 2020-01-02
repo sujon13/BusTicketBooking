@@ -9,7 +9,7 @@ class Bus(models.Model):
         ('Tungipara Express', 'Tungipara Express'),
         ('Saintmartin Hyundai', 'Saintmartin Hyundai')
     ]
-    operator_name = models.CharField(max_length=20, choices=OPERATOR_CHOICES, default='...')
+    operator_name = models.CharField(max_length=50, choices=OPERATOR_CHOICES, default='...')
 
     MANUFACTURER_CHOICES = [
         ('SCANIA', 'Scania'),
@@ -18,7 +18,7 @@ class Bus(models.Model):
         ('HINO', 'Hino'),
         ('MAN', 'Man')
     ]
-    manufacturer = models.CharField(max_length=20, choices=MANUFACTURER_CHOICES, default='HINO')
+    manufacturer = models.CharField(max_length=50, choices=MANUFACTURER_CHOICES, default='HINO')
 
     CLASS_CHOICES = [
         ('ECONOMY', 'Economy Class'),
@@ -33,6 +33,12 @@ class Bus(models.Model):
     column_in_first_row = models.IntegerField(default=4)
     column_in_last_row = models.IntegerField(default=5)
 
+    def get_rows(self):
+        rows = "ABCDEFGHI"
+        if self.num_of_rows == 10:
+            rows = rows + "J"
+        return rows
+
     def __str__(self):
         ret = self.operator_name + ' ' + self.manufacturer + ' '
         extra_information = 'AC' if self.hasAc is True else 'Non AC'
@@ -43,7 +49,7 @@ class Bus(models.Model):
 
 class Seat(models.Model):
     bus = models.ForeignKey(Bus, on_delete=models.CASCADE, null=True, blank=True)
-    seat_no = models.CharField(max_length=10, default="A1")
+    seat_no = models.CharField(max_length=50, default="A1")
 
     def __str__(self):
         ret = self.bus.operator_name + ' ' + self.bus.manufacturer + ' '
@@ -63,7 +69,7 @@ class Trip(models.Model):
         ('SYLHET', 'Sylhet'),
         ('KHULNA', 'Khulna'),
     ]
-    start_station = models.CharField(max_length=20, choices=START_STATION_CHOICES, default='...')
+    start_station = models.CharField(max_length=50, choices=START_STATION_CHOICES, default='...')
 
     DESTINATION_CHOICES = [
         ('DHAKA', 'Dhaka'),
@@ -72,12 +78,12 @@ class Trip(models.Model):
         ('SYLHET', 'Sylhet'),
         ('KHULNA', 'Khulna'),
     ]
-    destination = models.CharField(max_length=20, choices=DESTINATION_CHOICES, default='...')
+    destination = models.CharField(max_length=50, choices=DESTINATION_CHOICES, default='...')
 
     fare = models.IntegerField(default=0)
     start_time = models.DateTimeField(default=datetime.now)
     end_time = models.TimeField(null=True, blank=True)
-    description = models.CharField(max_length=50, null=True, blank=True)
+    description = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
         ret = self.start_station + '-' + self.destination + ' '
@@ -87,7 +93,7 @@ class Trip(models.Model):
 
 class TripSeat(models.Model):
     trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
-    seat_no = models.CharField(max_length=10)
+    seat_no = models.CharField(max_length=50)
 
     SEAT_STATUS_CHOICES = [
         ('AVAILABLE', 'Available'),
@@ -95,7 +101,7 @@ class TripSeat(models.Model):
         ('BOOKED', 'Booked'),
         ('DISABLED', 'Disabled'),
     ]
-    status = models.CharField(max_length=10, choices=SEAT_STATUS_CHOICES, default='...')
+    status = models.CharField(max_length=50, choices=SEAT_STATUS_CHOICES, default='...')
 
     def __str__(self):
         return str(self.trip.id) + ' ' + str(self.seat_no) + ' ' + self.status

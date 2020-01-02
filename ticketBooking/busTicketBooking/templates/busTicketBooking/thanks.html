@@ -9,6 +9,16 @@
 {% endblock css %}
 {% endcomment %}
 
+{% comment %}<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+{% for trip in trip_list %}
+    <p>
+        start: {{ trip.start_station }} des: {{ trip.destination }} date: {{ trip.start_time }} faka seat: {{ trip.seat }}
+    </p>
+{% endfor %}
+</body>{% endcomment %}
 
 <!DOCTYPE html>
 <html>
@@ -27,7 +37,7 @@
     list-style-type:none;
 }
 .button {
-    {% comment %}background-color: #ffffff;{% endcomment %}
+    background-color: #ffffff;
     border: 2px solid #101210;
     padding: 15px 15px;
     text-align: center;
@@ -137,25 +147,57 @@ p {
          row.appendChild(cell2);
          tabBody.appendChild(row);
     }
+    function postToView(params, method='get') {
+        alert('called');
+
+        // The rest of this code assumes you are not using a library.
+        // It can be made less wordy if you use one.
+        const form = document.createElement('form');
+        form.method = method;
+        form.action = "{% url 'get_name' %}";
+
+        for (const key in params) {
+            if (params.hasOwnProperty(key)) {
+                const hiddenField = document.createElement('input');
+                hiddenField.type = 'hidden';
+                hiddenField.name = key;
+                hiddenField.value = params[key];
+                form.appendChild(hiddenField);
+            }
+        }
+        document.body.appendChild(form);
+        form.submit();
+    }
 </script>
 <div class="container-fluid">
 
-    <div class="col-sm-4" style="margin-top: 10px">
+    <div class="col-sm-4" style="margin-top: 20px">
         <ul id="seat">
-        {% for row in "ABCDEFGHIJ" %}
-            <li>
-                <ul id="seat-row">
-                    {% for col in "1234" %}
-                        <li><button data-toggle="tooltip" data-placement="top" id="{{ row|add:col }}" class="button"></button>
-                        <script>
-                            id = "{{ row|add:col }}";
-                            setColor(id, seatInfo[id]);
-                        </script>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </li>
-        {% endfor %}
+            {% for row in "ABCDEFGHIJ" %}
+                <li>
+                    <ul id="seat-row">
+                        {% if trip.bus.num_of_columns == 4 %}
+                            {% for col in "1234" %}
+                                <li><button data-toggle="tooltip" data-placement="top" id="{{ row|add:col }}" class="button"></button>
+                                <script>
+                                    id = "{{ row|add:col }}";
+                                    setColor(id, seatInfo[id]);
+                                </script>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            {% for col in "123" %}
+                                <li><button data-toggle="tooltip" data-placement="top" id="{{ row|add:col }}" class="button"></button>
+                                <script>
+                                    id = "{{ row|add:col }}";
+                                    setColor(id, seatInfo[id]);
+                                </script>
+                                </li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endfor %}
         </ul>
     </div>
     <div class="col-sm-4" style="margin-top: 20px">
@@ -170,6 +212,7 @@ p {
             </tbody>
         </table>
         <p id="total-fare">Total Fare: 0 Taka</p>
+        <button id="save" class="button" onclick="postToView( {A2: 'SOLD' })"></button>
     </div>
 </div>
 
