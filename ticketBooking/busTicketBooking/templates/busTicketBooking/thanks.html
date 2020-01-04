@@ -147,15 +147,18 @@ p {
          row.appendChild(cell2);
          tabBody.appendChild(row);
     }
-    function postToView(params, method='get') {
-        alert('called');
 
-        // The rest of this code assumes you are not using a library.
-        // It can be made less wordy if you use one.
+    function postToView( method='post') {
+        var params = {};
+
+        var table = document.getElementById("selected-seat");
+        for(var i = 1; i < table.rows.length; i++) {
+            params["seat" + i] = table.rows[i].cells[0].innerHTML;
+        }
+
         const form = document.createElement('form');
         form.method = method;
         form.action = "{% url 'get_name' %}";
-
         for (const key in params) {
             if (params.hasOwnProperty(key)) {
                 const hiddenField = document.createElement('input');
@@ -165,9 +168,22 @@ p {
                 form.appendChild(hiddenField);
             }
         }
+        // trip
+        var hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = 'trip_id';
+        hiddenField.value = '{{ trip.id }}';
+        form.appendChild(hiddenField);
+        // csrf
+        hiddenField = document.createElement('input');
+        hiddenField.type = 'hidden';
+        hiddenField.name = 'csrfmiddlewaretoken';
+        hiddenField.value = '{{ csrf_token }}'
+        form.appendChild(hiddenField);
         document.body.appendChild(form);
         form.submit();
     }
+
 </script>
 <div class="container-fluid">
 
@@ -212,7 +228,8 @@ p {
             </tbody>
         </table>
         <p id="total-fare">Total Fare: 0 Taka</p>
-        <button id="save" class="button" onclick="postToView( {A2: 'SOLD' })"></button>
+        <button id="save" class="button" onclick="postToView()"></button>
+
     </div>
 </div>
 

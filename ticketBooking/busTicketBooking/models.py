@@ -86,7 +86,7 @@ class Trip(models.Model):
     description = models.CharField(max_length=100, null=True, blank=True)
 
     def __str__(self):
-        ret = self.start_station + '-' + self.destination + ' '
+        ret = str(self.id) + ' ' + self.start_station + '-' + self.destination + ' '
         ret = ret + '(' + self.bus.operator_name + ')' + ' '
         return ret + self.start_time.strftime("%B %d, %Y %H:%M")
 

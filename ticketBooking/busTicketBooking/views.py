@@ -74,15 +74,24 @@ def get_seat_info(trip):
     return seat_info
 
 
-def thanks(request):
-    return render(request, 'busTicketBooking/thanks.html')
+#def thanks(request):
+#    return render(request, 'busTicketBooking/thanks.html')
 
 
 def get_name(request):
-    seat = request.GET.get('A2')
-
-    print(seat)
-    return render(request, 'busTicketBooking/thanks.html')
+    trip_id = request.POST.get('trip_id')
+    seat_list = {}
+    for i in range(4):
+        key = 'seat' + str(i)
+        if request.POST.get(key):
+            seat_list[key] = request.POST.get(key)
+    # these seats are booked. we need to update database
+    for seat_key, seat_value in seat_list.items():
+        TripSeat.objects.filter(
+            trip__id__iexact=trip_id,
+            seat_no__iexact=seat_value
+        ).update(status='BOOKED')
+    return render(request, 'busTicketBooking/home.html')
 
 """
 def get_station(request):
