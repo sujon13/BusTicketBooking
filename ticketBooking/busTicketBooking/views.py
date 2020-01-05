@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.core.serializers import serialize
+
 from django.http import HttpResponseRedirect, HttpResponse
 import json
 from .models import Bus, Trip, Seat, TripSeat
@@ -15,9 +17,17 @@ def home(request):
         date_of_journey = form.cleaned_data['date_of_journey']
         trip_list = get_trip_list(start_station, destination, date_of_journey)
         seat_info = get_seat_info(trip_list[0])
-        context = {'number_of_buses': trip_list.count(), 'trip': trip_list[0],
-                   'seat_info': json.dumps(seat_info)}
-        return render(request, 'busTicketBooking/thanks.html', context)
+        context = {
+            'cnt': len(trip_list),
+            'start_station': start_station,
+            'destination': destination,
+            'date_of_journey': date_of_journey,
+            'number_of_buses': trip_list.count(),
+            #'trip': serialize('json', trip_list),
+            'trip_list': trip_list,
+            'seat_info': json.dumps(seat_info)
+        }
+        return render(request, 'busTicketBooking/trip_details.html', context)
 
     else:
         form = SearchBus()
@@ -44,7 +54,8 @@ def get_trip_list(start_station, destination, date_of_journey):
     trip_list = Trip.objects.filter(
         start_station__icontains=start_station,
         destination__icontains=destination,
-        start_time__date=journey_date
+        start_time__date=journey_date,
+        start_time__gte=datetime.now()
     ).order_by('start_time__time')
 
     return adding_available_seat_to_trip(trip_list)
