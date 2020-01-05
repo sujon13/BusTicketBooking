@@ -39,6 +39,9 @@ class Bus(models.Model):
             rows = rows + "J"
         return rows
 
+    def natural_key(self):
+        return (self.operator_name, self.manufacturer, self.hasAc, self.total_seat)
+
     def __str__(self):
         ret = self.operator_name + ' ' + self.manufacturer + ' '
         extra_information = 'AC' if self.hasAc is True else 'Non AC'

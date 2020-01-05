@@ -47,9 +47,17 @@
         font-weight: bold;
         font-size: 17px;
     }
+    .u-list {
+        list-style-type: none;
+    }
 {% endblock css %}
 
 {% block content %}
+    <script>
+        var tripList =JSON.parse("{{ trip_list|escapejs }}");
+        var str = JSON.stringify(tripList, null, 4); // (Optional) beautiful indented output.
+        console.log(str);
+    </script>
     <div class="container-fluid">
 		<div class="container">
 			<div class="row">
@@ -62,7 +70,7 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-4" id="total-bus">Total Buses Found : {{ cnt }}</div>
+				<div class="col-md-4" id="total-bus"></div>
 				<div class="col-md-4" id="total-operator">Total Operators Found : {{ t }}</div>
 				<div class="col-md-4" id="total-seats">Total Seats Available : {{ b }}</div>
 
@@ -95,29 +103,6 @@
       				</tr>
     			</thead>
     			<tbody>
-                    {% for trip in trip_list %}
-                        <tr style="margin-top: 50px;">
-                            <td>
-                                <span style="font-weight: bold;">{{ trip.bus.operator_name }}
-                                </span><br>
-                                {{ trip.bus.manufacturer }},
-                                {% if trip.bus.hasAC %}
-                                    AC
-                                {% else %}
-                                    NON AC
-                                {% endif %}<br>
-                                <span style="font-weight: bold;">Route:</span>
-                                {{ trip.description }}<br>
-                            </td>
-                            <td style="vertical-align: middle;">{{ trip.start_time.time|time:"g:i a"}}</td>
-                            <td style="vertical-align: middle;">{{ trip.end_time|time:"g:i a"}}</td>
-                            <td style="vertical-align: middle;">{{ trip.seat }}</td>
-                            <td style="vertical-align: middle;">
-                                <span style="font-size: 20px; color: green;">{{ trip.fare }} TK</span> <br>
-                                <button id="btn-view-seats">view sets</button>
-                            </td>
-                        </tr>
-                    {% endfor %}
 			    </tbody>
 			</table>
 
@@ -126,5 +111,154 @@
 
 		</div>
 	</div>
+    <script>
+        function myFunc() {
+            // total bus
+            var element = document.getElementById("total-bus");
+            element.innerText = "Total Buses Found: " + tripList.length;
+            //var content = document.createTextNode("Total Buses Found: " + tripList.length);
+            //element.appendChild(content);
+
+            // total operator
+            var operator = {};
+            var cnt = 0;
+            for(var i = 0; i < tripList.length; i++) {
+                //var trip = tripList[i].fields;
+                //alert(trip.bus[0]);
+            }
+        }
+        myFunc();
+        function addRow(trip)
+        {
+            if (!document.getElementsByTagName) return;
+            var tabBody=document.getElementsByTagName("tbody").item(0);
+            var row=document.createElement("tr");
+            row.style.marginTop = "50px";
+
+            // first col
+            var firstCol = document.createElement("td");
+            var myList = document.createElement("ul");
+            myList.className="u-list";
+
+            // 1st row of ul
+            var listItem = document.createElement("li");
+            var listValue = createSpanElement(trip.bus[0]);
+            listItem.appendChild(listValue);
+            myList.appendChild(listItem);
+
+            //2nd row of ul list
+            listItem = document.createElement("li");
+            var content = trip.bus[1] + ',';
+            if(trip.bus[2] == true) {
+                content += " AC";
+            } else {
+                 content += " NON AC";
+            }
+            listValue = document.createTextNode(content);
+            listItem.appendChild(listValue);
+            myList.appendChild(listItem);
+
+
+            //3rd row of ul list
+            listItem = document.createElement("li");
+            listValue = createSpanElement("Route: ");
+            listItem.appendChild(listValue);
+            var textnodeForFirstCol = document.createTextNode(trip.description);
+            listItem.appendChild(textnodeForFirstCol);
+            myList.appendChild(listItem);
+
+            firstCol.appendChild(myList);
+            row.appendChild(firstCol);
+
+            //second col
+            var startTime = document.createElement("td");
+            startTime.style.verticalAlign = "middle";
+            // time conversion
+            var timeIn24HourFormat = datetime_to_time(trip.start_time, 11);
+            var timeIn12HourFormat = convertFrom24To12Hour(timeIn24HourFormat);
+            var textnodeForStartTime = document.createTextNode(timeIn12HourFormat);
+            startTime.appendChild(textnodeForStartTime);
+            row.appendChild(startTime);
+            datetime_to_time(trip.start_time);
+
+            //third col
+            var endTime = document.createElement("td");
+            endTime.style.verticalAlign = "middle";
+            // time conversion
+            timeIn24HourFormat = datetime_to_time(trip.end_time, 0);
+            timeIn12HourFormat = convertFrom24To12Hour(timeIn24HourFormat);
+            var textnodeForEndTime = document.createTextNode(timeIn12HourFormat);
+            endTime.appendChild(textnodeForEndTime);
+            row.appendChild(endTime);
+
+            //fourth col
+            var seat = document.createElement("td");
+            seat.style.verticalAlign = "middle";
+            var textnodeForSeat = document.createTextNode(trip.bus[3]);
+            seat.appendChild(textnodeForSeat);
+            row.appendChild(seat);
+
+            // last col
+            var lastCol = document.createElement("td");
+            lastCol.style.verticalAlign = "middle";
+
+            // create unordered list
+            myList = document.createElement("ul");
+            myList.className="u-list";
+
+            //1
+            listItem = document.createElement("li");
+            var spanElement = createSpanElement(trip.fare + ' TK');
+            spanElement.fontSize = "20px";
+            spanElement.color = "green";
+            var listValue = spanElement;
+            listItem.appendChild(listValue);
+            myList.appendChild(listItem);
+
+            //2
+            listItem = document.createElement("li");
+            var btn = document.createElement('BUTTON');
+            btn.id = "btn-view-seats";
+            var textNodeForButton = document.createTextNode('view-seats');
+            btn.appendChild(textNodeForButton);
+            listItem.appendChild(btn);
+
+            myList.appendChild(listItem);
+            lastCol.appendChild(myList);
+
+            row.appendChild(lastCol);
+            tabBody.appendChild(row);
+        }
+        function createSpanElement(content) {
+            var spanElement = document.createElement("SPAN");
+            spanElement.style.fontWeight= "bold";
+            var textContent = document.createTextNode(content);
+            spanElement.appendChild(textContent);
+            return spanElement;
+        }
+
+        function populateTableForTrip() {
+            for(var i = 0; i < tripList.length; i++)
+            {
+                var trip = tripList[i].fields;
+                addRow(trip);
+            }
+        }
+        populateTableForTrip();
+        //2020-01-30T06:00:00Z
+        function datetime_to_time(datetime, startPosition) {
+            return datetime.substr(startPosition, 5);
+        }
+        function convertFrom24To12Hour(timeIn24HourFormat) {
+            var hour = timeIn24HourFormat.substr(0, 2);
+            var minute = timeIn24HourFormat.substr(3, 2);
+            const isAM = hour < 12 ? true: false;
+            hour %= 12;
+            if(hour == 0) {
+                hour = 12;
+            }
+            return hour + ':' + minute + (isAM ? 'AM': 'PM');
+        }
+    </script>
 
 {% endblock content %}

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.core.serializers import serialize
+from rest_framework import serializers
 
 from django.http import HttpResponseRedirect, HttpResponse
 import json
@@ -22,9 +23,8 @@ def home(request):
             'start_station': start_station,
             'destination': destination,
             'date_of_journey': date_of_journey,
-            'number_of_buses': trip_list.count(),
-            #'trip': serialize('json', trip_list),
-            'trip_list': trip_list,
+            'trip_list': serialize('json', trip_list,  use_natural_foreign_keys=True),
+            #'trip_list': trip_list,
             'seat_info': json.dumps(seat_info)
         }
         return render(request, 'busTicketBooking/trip_details.html', context)
@@ -57,7 +57,6 @@ def get_trip_list(start_station, destination, date_of_journey):
         start_time__date=journey_date,
         start_time__gte=datetime.now()
     ).order_by('start_time__time')
-
     return adding_available_seat_to_trip(trip_list)
 
 
