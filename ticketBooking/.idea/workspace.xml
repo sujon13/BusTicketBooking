@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fc634eea-9d28-456e-8983-c07298c0f1ab" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/thanks.html" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/thanks.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/busTicketBooking/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,8 +19,8 @@
       <file leaf-file-name="thanks.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/thanks.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3071">
-              <caret line="58" column="8" lean-forward="true" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="8" />
+            <state relative-caret-position="77">
+              <caret line="60" column="42" selection-start-line="60" selection-start-column="42" selection-end-line="60" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -38,11 +34,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="trip_details.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="trip_details.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="55">
-              <caret line="114" column="28" selection-start-line="114" selection-start-column="28" selection-end-line="114" selection-end-column="28" />
+            <state relative-caret-position="539">
+              <caret line="121" column="12" selection-start-line="121" selection-start-column="12" selection-end-line="121" selection-end-column="12" />
               <folding>
                 <element signature="e#1285#1307#0#HTML" expanded="true" />
                 <element signature="e#1442#1478#0#HTML" expanded="true" />
@@ -70,11 +66,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/busTicketBooking/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="25" column="11" lean-forward="true" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="11" />
+            <state relative-caret-position="374">
+              <caret line="29" column="8" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -134,6 +130,7 @@
       <find>get_seat_info</find>
       <find>tz</find>
       <find>total</find>
+      <find>trip</find>
       <find>btn-view</find>
     </findStrings>
   </component>
@@ -162,10 +159,10 @@
         <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/base.html" />
         <option value="$PROJECT_DIR$/busTicketBooking/signals.py" />
         <option value="$PROJECT_DIR$/busTicketBooking/urls.py" />
-        <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/thanks.html" />
-        <option value="$PROJECT_DIR$/busTicketBooking/views.py" />
         <option value="$PROJECT_DIR$/busTicketBooking/models.py" />
         <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.html" />
+        <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/thanks.html" />
+        <option value="$PROJECT_DIR$/busTicketBooking/views.py" />
       </list>
     </option>
   </component>
@@ -711,13 +708,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/thanks.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3071">
-          <caret line="58" column="8" lean-forward="true" selection-start-line="58" selection-start-column="8" selection-end-line="58" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/base.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="330">
@@ -742,20 +732,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/busTicketBooking/views.py">
+    <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/thanks.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="25" column="11" lean-forward="true" selection-start-line="25" selection-start-column="11" selection-end-line="25" selection-end-column="11" />
-          <folding>
-            <element signature="e#0#35#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="77">
+          <caret line="60" column="42" selection-start-line="60" selection-start-column="42" selection-end-line="60" selection-end-column="42" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="55">
-          <caret line="114" column="28" selection-start-line="114" selection-start-column="28" selection-end-line="114" selection-end-column="28" />
+        <state relative-caret-position="539">
+          <caret line="121" column="12" selection-start-line="121" selection-start-column="12" selection-end-line="121" selection-end-column="12" />
           <folding>
             <element signature="e#1285#1307#0#HTML" expanded="true" />
             <element signature="e#1442#1478#0#HTML" expanded="true" />
@@ -769,6 +756,16 @@
             <element signature="e#3746#3777#0#HTML" expanded="true" />
             <element signature="e#3917#3948#0#HTML" expanded="true" />
             <element signature="e#3314#3352#0#HTML" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/busTicketBooking/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="374">
+          <caret line="29" column="8" selection-start-line="29" selection-start-column="8" selection-end-line="29" selection-end-column="8" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -58,11 +58,9 @@ p {
 <body>
 <script>
     var seatInfo = JSON.parse("{{ seat_info|escapejs }}");
-    {% comment %}var tripList =JSON.parse("{{ trip|escapejs }}");
-    //var str = JSON.stringify(tripList);
-    var str = JSON.stringify(tripList, null, 4); // (Optional) beautiful indented output.
-    console.log(str); // Logs output to dev tools console.
-    alert(str);{% endcomment %}
+    //var tripList =JSON.parse("{{ trip_list|escapejs }}");
+    //var str = JSON.stringify(tripList, null, 4); // (Optional) beautiful indented output.
+    //console.log(str); // Logs output to dev tools console.
     var cnt = {};
     $(document).ready(function(){
         $('[data-toggle="tooltip"]').tooltip({
