@@ -17,15 +17,16 @@ def home(request):
         destination = form.cleaned_data['destination']
         date_of_journey = form.cleaned_data['date_of_journey']
         trip_list = get_trip_list(start_station, destination, date_of_journey)
-        seat_info = get_seat_info(trip_list[0])
+        trip_seat_list = get_trip_seat_list(trip_list)
+
         context = {
             'cnt': len(trip_list),
             'start_station': start_station,
             'destination': destination,
             'date_of_journey': date_of_journey,
-            'trip_list': serialize('json', trip_list,  use_natural_foreign_keys=True),
-            #'trip_list': trip_list,
-            'seat_info': json.dumps(seat_info)
+            'trip_list': serialize('json', trip_list, use_natural_foreign_keys=True),
+            'trip_seat_list': serialize('json', trip_seat_list)
+            #'seat_info': json.dumps(seat_info)
         }
         return render(request, 'busTicketBooking/trip_details.html', context)
 
@@ -69,19 +70,24 @@ def adding_available_seat_to_trip(trip_list):
 
 def get_num_of_available_seats(trip):
     trip_seat_list = TripSeat.objects.filter(trip__id__iexact=trip.id).order_by('seat_no')
-    available_seat = 0;
+    available_seat = 0
     for trip_seat in trip_seat_list:
         if trip_seat.status == 'AVAILABLE':
-            available_seat = available_seat+ 1
+            available_seat = available_seat + 1
     return available_seat
 
 
-def get_seat_info(trip):
-    trip_seat_list = TripSeat.objects.filter(trip__id__iexact=trip.id).order_by('seat_no')
-    seat_info = {}
-    for trip_seat in trip_seat_list:
-        seat_info[trip_seat.seat_no] = trip_seat.status
-    return seat_info
+def get_trip_seat_list(trip_list):
+    trip_seat_list = []
+    for trip in trip_list:
+        trip_seat = TripSeat.objects.filter(trip__id__iexact=trip.id).order_by('seat_no')
+        trip_seat_list.extend(trip_seat)
+
+    return trip_seat_list
+    #seat_info = {}
+    #for trip_seat in trip_seat_list:
+    #    seat_info[trip_seat.seat_no] = trip_seat.status
+    #return seat_info
 
 
 #def thanks(request):

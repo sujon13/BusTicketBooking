@@ -106,6 +106,9 @@ class TripSeat(models.Model):
     ]
     status = models.CharField(max_length=50, choices=SEAT_STATUS_CHOICES, default='...')
 
+    def natural_key(self):
+        return(self.trip.id, self.seat_no, self.status)
+
     def __str__(self):
-        return str(self.trip.id) + ' ' + str(self.seat_no) + ' ' + self.status
+        return str(self.trip) + ' ' + str(self.seat_no) + ' ' + self.status
 

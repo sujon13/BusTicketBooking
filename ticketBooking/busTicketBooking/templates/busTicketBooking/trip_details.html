@@ -57,6 +57,10 @@
         var tripList =JSON.parse("{{ trip_list|escapejs }}");
         var str = JSON.stringify(tripList, null, 4); // (Optional) beautiful indented output.
         console.log(str);
+        // seat info
+        var tripSeatList = JSON.parse("{{ trip_seat_list|escapejs }}");
+        str = JSON.stringify(tripSeatList, null, 4); // (Optional) beautiful indented output.
+        console.log(str)
     </script>
     <div class="container-fluid">
 		<div class="container">
@@ -116,19 +120,42 @@
             // total bus
             var element = document.getElementById("total-bus");
             element.innerText = "Total Buses Found: " + tripList.length;
-            //var content = document.createTextNode("Total Buses Found: " + tripList.length);
-            //element.appendChild(content);
 
             // total operator
             var operator = {};
-            var cnt = 0;
+            var numOfOperator = 0;
             for(var i = 0; i < tripList.length; i++) {
-                //var trip = tripList[i].fields;
-                //alert(trip.bus[0]);
+                var trip = tripList[i].fields;
+                if(operator[trip.bus[0]] == undefined) {
+                     numOfOperator += 1;
+                    operator[trip.bus[0]] = true;
+                }
             }
+            element = document.getElementById("total-operator");
+            element.innerText = "Total Operator Found: " + numOfOperator;
+
+            //total seats available
+            var totalNumOfSeats = 0;
+            for(let i = 0; i < tripList.length; i++) {
+                const trip_id = tripList[i].pk;
+                totalNumOfSeats += getNumOfAvailableSeatsOfTrip(trip_id);
+            }
+            element = document.getElementById("total-seats");
+            element.innerText = "Total Seats Found: " + totalNumOfSeats;
         }
         myFunc();
-        function addRow(trip)
+        function getNumOfAvailableSeatsOfTrip(trip_id) {
+            var numOfAvailableSeats = 0;
+            for(let i = 0; i <tripSeatList.length; i++)
+            {
+                var tripSeat = tripSeatList[i].fields;
+                if(tripSeat.trip == trip_id && tripSeat.status == 'AVAILABLE') {
+                    numOfAvailableSeats += 1;
+                }
+            }
+            return numOfAvailableSeats;
+        }
+        function addRow(trip, trip_id)
         {
             if (!document.getElementsByTagName) return;
             var tabBody=document.getElementsByTagName("tbody").item(0);
@@ -176,8 +203,7 @@
             // time conversion
             var timeIn24HourFormat = datetime_to_time(trip.start_time, 11);
             var timeIn12HourFormat = convertFrom24To12Hour(timeIn24HourFormat);
-            var textnodeForStartTime = document.createTextNode(timeIn12HourFormat);
-            startTime.appendChild(textnodeForStartTime);
+            startTime.innerText = timeIn12HourFormat;
             row.appendChild(startTime);
             datetime_to_time(trip.start_time);
 
@@ -187,15 +213,14 @@
             // time conversion
             timeIn24HourFormat = datetime_to_time(trip.end_time, 0);
             timeIn12HourFormat = convertFrom24To12Hour(timeIn24HourFormat);
-            var textnodeForEndTime = document.createTextNode(timeIn12HourFormat);
-            endTime.appendChild(textnodeForEndTime);
+            endTime.innerText = timeIn12HourFormat;
             row.appendChild(endTime);
 
             //fourth col
             var seat = document.createElement("td");
             seat.style.verticalAlign = "middle";
-            var textnodeForSeat = document.createTextNode(trip.bus[3]);
-            seat.appendChild(textnodeForSeat);
+            const numOfAvailableSeats = getNumOfAvailableSeatsOfTrip(trip_id);
+            seat.innerText = numOfAvailableSeats.toString();
             row.appendChild(seat);
 
             // last col
@@ -219,8 +244,7 @@
             listItem = document.createElement("li");
             var btn = document.createElement('BUTTON');
             btn.id = "btn-view-seats";
-            var textNodeForButton = document.createTextNode('view-seats');
-            btn.appendChild(textNodeForButton);
+            btn.innerText = 'view-seats';
             listItem.appendChild(btn);
 
             myList.appendChild(listItem);
@@ -240,8 +264,9 @@
         function populateTableForTrip() {
             for(var i = 0; i < tripList.length; i++)
             {
-                var trip = tripList[i].fields;
-                addRow(trip);
+                const trip = tripList[i].fields;
+                const trip_id = tripList[i].pk;
+                addRow(trip, trip_id);
             }
         }
         populateTableForTrip();
