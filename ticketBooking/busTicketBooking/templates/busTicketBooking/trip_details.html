@@ -47,7 +47,7 @@
         font-weight: bold;
         font-size: 17px;
     }
-    .u-list {
+    .u-list, #operator-list {
         list-style-type: none;
     }
 {% endblock css %}
@@ -86,17 +86,16 @@
 		<div class="row">
 			<div class="col-md-2" style="padding-top: 10px; padding-bottom: 20px;">
 				<span id="operator-bus-type">Operator</span><br>
-				<input type="checkbox" name="cbox">Tunggipara Express<br>
-				<input type="checkbox" name="cbox">Hanif Express<br>
-				<input type="checkbox" name="cbox">Green Line<br>
+                <ul id="operator-list">
+                </ul>
 				<br>
 				<span id="operator-bus-type">Bus Type</span><br>
-				<input type="checkbox" name="cbox">AC<br>
-				<input type="checkbox" name="cbox">Non-AC
+				<input type="checkbox" name="ac" onclick="filterTripList()">AC<br>
+				<input type="checkbox" name="nonac" onclick="filterTripList()">Non-AC
 			</div>
 			<div class="col-md-10">
 
-			<table class="table table-condensed">
+			<table id="trip-table" class="table table-condensed">
     			<thead>
      				<tr style="background-color: silver;">
         				<th >Operator(Bus Type)</th>
@@ -158,110 +157,47 @@
         function addRow(trip, trip_id)
         {
             if (!document.getElementsByTagName) return;
-            var tabBody=document.getElementsByTagName("tbody").item(0);
-            var row=document.createElement("tr");
+            let tabBody = document.getElementsByTagName("tbody").item(0);
+            let row = document.createElement("tr");
             row.style.marginTop = "50px";
 
             // first col
-            var firstCol = document.createElement("td");
-            var myList = document.createElement("ul");
-            myList.className="u-list";
-
-            // 1st row of ul
-            var listItem = document.createElement("li");
-            var listValue = createSpanElement(trip.bus[0]);
-            listItem.appendChild(listValue);
-            myList.appendChild(listItem);
-
-            //2nd row of ul list
-            listItem = document.createElement("li");
-            var content = trip.bus[1] + ',';
-            if(trip.bus[2] == true) {
-                content += " AC";
-            } else {
-                 content += " NON AC";
-            }
-            listValue = document.createTextNode(content);
-            listItem.appendChild(listValue);
-            myList.appendChild(listItem);
-
-
-            //3rd row of ul list
-            listItem = document.createElement("li");
-            listValue = createSpanElement("Route: ");
-            listItem.appendChild(listValue);
-            var textnodeForFirstCol = document.createTextNode(trip.description);
-            listItem.appendChild(textnodeForFirstCol);
-            myList.appendChild(listItem);
-
-            firstCol.appendChild(myList);
-            row.appendChild(firstCol);
+            let firstCol =
+                '<td>' + trip.bus[0] + '<br>' +
+                    trip.bus[1] + ',' + ((trip.bus[2] == true)? ' AC': ' NON AC') + '<br>' +
+                    '<span style="font-weight: bold;">Route:</span>' + trip.description +
+                '</td>';
+            row.innerHTML = firstCol;
 
             //second col
-            var startTime = document.createElement("td");
-            startTime.style.verticalAlign = "middle";
             // time conversion
             var timeIn24HourFormat = datetime_to_time(trip.start_time, 11);
             var timeIn12HourFormat = convertFrom24To12Hour(timeIn24HourFormat);
-            startTime.innerText = timeIn12HourFormat;
-            row.appendChild(startTime);
-            datetime_to_time(trip.start_time);
+            let startTime = '<td style="vertical-align: middle;">' + timeIn12HourFormat + '</td>'
+            row.innerHTML += startTime;
 
             //third col
-            var endTime = document.createElement("td");
-            endTime.style.verticalAlign = "middle";
-            // time conversion
             timeIn24HourFormat = datetime_to_time(trip.end_time, 0);
             timeIn12HourFormat = convertFrom24To12Hour(timeIn24HourFormat);
-            endTime.innerText = timeIn12HourFormat;
-            row.appendChild(endTime);
+            let endTime = '<td style="vertical-align: middle;">' + timeIn12HourFormat + '</td>'
+            row.innerHTML += endTime;
 
             //fourth col
-            var seat = document.createElement("td");
-            seat.style.verticalAlign = "middle";
-            const numOfAvailableSeats = getNumOfAvailableSeatsOfTrip(trip_id);
-            seat.innerText = numOfAvailableSeats.toString();
-            row.appendChild(seat);
+            let seat = '<td style="vertical-align: middle;">' + getNumOfAvailableSeatsOfTrip(trip_id) + '</td>'
+            row.innerHTML += seat;
 
             // last col
-            var lastCol = document.createElement("td");
-            lastCol.style.verticalAlign = "middle";
+            let lastCol =
+                '<td style="vertical-align: middle;">' +
+                    '<span style="font-size: 20px; color: green;">' + trip.fare + 'TK</span> <br>' +
+                    '<button id="btn-view-seats">view seats</button>' +
+                '</td>'
+            row.innerHTML += lastCol;
 
-            // create unordered list
-            myList = document.createElement("ul");
-            myList.className="u-list";
-
-            //1
-            listItem = document.createElement("li");
-            var spanElement = createSpanElement(trip.fare + ' TK');
-            spanElement.fontSize = "20px";
-            spanElement.color = "green";
-            var listValue = spanElement;
-            listItem.appendChild(listValue);
-            myList.appendChild(listItem);
-
-            //2
-            listItem = document.createElement("li");
-            var btn = document.createElement('BUTTON');
-            btn.id = "btn-view-seats";
-            btn.innerText = 'view-seats';
-            listItem.appendChild(btn);
-
-            myList.appendChild(listItem);
-            lastCol.appendChild(myList);
-
-            row.appendChild(lastCol);
             tabBody.appendChild(row);
         }
-        function createSpanElement(content) {
-            var spanElement = document.createElement("SPAN");
-            spanElement.style.fontWeight= "bold";
-            var textContent = document.createTextNode(content);
-            spanElement.appendChild(textContent);
-            return spanElement;
-        }
-
-        function populateTableForTrip() {
+        function populateTableForTrip(tripList) {
+            $("#trip-table tbody tr").remove();
             for(var i = 0; i < tripList.length; i++)
             {
                 const trip = tripList[i].fields;
@@ -269,7 +205,7 @@
                 addRow(trip, trip_id);
             }
         }
-        populateTableForTrip();
+        populateTableForTrip(tripList);
         //2020-01-30T06:00:00Z
         function datetime_to_time(datetime, startPosition) {
             return datetime.substr(startPosition, 5);
@@ -283,6 +219,70 @@
                 hour = 12;
             }
             return hour + ':' + minute + (isAM ? 'AM': 'PM');
+        }
+        function joinWordsByUnderscore(word) {
+            var temp = word.split(" ");
+            return temp.join('_');
+        }
+        function getOperatorList() {
+            var operatorList = []
+            for(var i = 0; i < tripList.length; i++)
+            {
+                const trip = tripList[i].fields;
+                const operator = trip.bus[0];
+                operatorList.push(operator);
+            }
+            return Array.from(new Set(operatorList));
+        }
+        function addOperatorList(id) {
+            var uList = document.getElementById(id);
+            let operatorList = getOperatorList();
+            for(let i = 0; i < operatorList.length; i++) {
+                // create a list item for this operator and add them to uList
+                let list = '<li>' + '<input type="checkbox" name=' + joinWordsByUnderscore(operatorList[i]) + ' onclick="filterTripList()">' + operatorList[i] + '</li>'
+                uList.innerHTML += list;
+            }
+        }
+        addOperatorList("operator-list");
+        function filterTripList() {
+            var filteredTripList = [];
+            let operatorList = getOperatorList();
+            for(let i = 0; i < operatorList.length; i++) {
+                let operator = joinWordsByUnderscore(operatorList[i]);
+                let element = document.getElementsByName(operator)[0];
+                if(!element.checked) {
+                    continue;
+                }
+                for(let j = 0; j < tripList.length; j++)
+                {
+                    const trip = tripList[j].fields;
+                    if(trip.bus[0] == element.name) {
+                        filteredTripList.push(tripList[j]);
+                    }
+                }
+            }
+            let busTypeList = ['ac', 'nonac'];
+            for(let i = 0; i < busTypeList.length; i++) {
+                let element = document.getElementsByName(busTypeList[i])[0];
+                if(!element.checked) {
+                    continue;
+                }
+                for(let j = 0; j < tripList.length; j++)
+                {
+                    const trip = tripList[j].fields;
+                    if(trip.bus[2] == true && element.name == "ac") {
+                        filteredTripList.push(tripList[j]);
+                    } else if(trip.bus[2] == false && element.name == 'nonac') {
+                        filteredTripList.push(tripList[j]);
+                    }
+                }
+            }
+            filteredTripList =  Array.from(new Set(filteredTripList));
+            if(filteredTripList.length == 0) {
+                populateTableForTrip(tripList);
+            } else {
+                populateTableForTrip(filteredTripList);
+            }
         }
     </script>
 
