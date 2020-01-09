@@ -55,6 +55,7 @@
 {% block content %}
     <script>
         var tripList =JSON.parse("{{ trip_list|escapejs }}");
+        var currentTripList = tripList;
         var str = JSON.stringify(tripList, null, 4); // (Optional) beautiful indented output.
         console.log(str);
         // seat info
@@ -115,7 +116,7 @@
 		</div>
 	</div>
     <script>
-        function myFunc() {
+        function myFunc(tripList) {
             // total bus
             var element = document.getElementById("total-bus");
             element.innerText = "Total Buses Found: " + tripList.length;
@@ -142,7 +143,7 @@
             element = document.getElementById("total-seats");
             element.innerText = "Total Seats Found: " + totalNumOfSeats;
         }
-        myFunc();
+        myFunc(tripList);
         function getNumOfAvailableSeatsOfTrip(trip_id) {
             var numOfAvailableSeats = 0;
             for(let i = 0; i <tripSeatList.length; i++)
@@ -163,17 +164,17 @@
 
             // first col
             let firstCol =
-                '<td>' + trip.bus[0] + '<br>' +
-                    trip.bus[1] + ',' + ((trip.bus[2] == true)? ' AC': ' NON AC') + '<br>' +
-                    '<span style="font-weight: bold;">Route:</span>' + trip.description +
-                '</td>';
+                `<td width="40%"> ${trip.bus[0]} <br>
+                    ${trip.bus[1]}, ${((trip.bus[2] == true)? ' AC': ' NON AC')} <br>
+                    <span style="font-weight: bold;">Route:</span> ${trip.description}
+                 </td>`;
             row.innerHTML = firstCol;
 
             //second col
             // time conversion
             var timeIn24HourFormat = datetime_to_time(trip.start_time, 11);
             var timeIn12HourFormat = convertFrom24To12Hour(timeIn24HourFormat);
-            let startTime = '<td style="vertical-align: middle;">' + timeIn12HourFormat + '</td>'
+            let startTime = `<td style="vertical-align: middle;"> ${timeIn12HourFormat} </td>`
             row.innerHTML += startTime;
 
             //third col
@@ -183,15 +184,15 @@
             row.innerHTML += endTime;
 
             //fourth col
-            let seat = '<td style="vertical-align: middle;">' + getNumOfAvailableSeatsOfTrip(trip_id) + '</td>'
+            let seat = `<td style="vertical-align: middle;">${getNumOfAvailableSeatsOfTrip(trip_id)}</td>`
             row.innerHTML += seat;
 
             // last col
             let lastCol =
-                '<td style="vertical-align: middle;">' +
-                    '<span style="font-size: 20px; color: green;">' + trip.fare + 'TK</span> <br>' +
-                    '<button id="btn-view-seats">view seats</button>' +
-                '</td>'
+                `<td style="vertical-align: middle;">
+                    <span style="font-size: 20px; color: green;">${trip.fare} TK</span> <br>
+                    <button id="btn-view-seats" onClick="demoFunction(this)">view seats</button>
+                </td>`
             row.innerHTML += lastCol;
 
             tabBody.appendChild(row);
@@ -247,43 +248,158 @@
         function filterTripList() {
             var filteredTripList = [];
             let operatorList = getOperatorList();
+
+            let elementOfAc = document.getElementsByName("ac")[0];
+            let elementOfNonAc = document.getElementsByName("nonac")[0];
+            var isOperatorChecked = false;
+            var isBusTypeChecked = false;
             for(let i = 0; i < operatorList.length; i++) {
                 let operator = joinWordsByUnderscore(operatorList[i]);
                 let element = document.getElementsByName(operator)[0];
                 if(!element.checked) {
                     continue;
                 }
+                isOperatorChecked = true;
+
                 for(let j = 0; j < tripList.length; j++)
                 {
                     const trip = tripList[j].fields;
-                    if(trip.bus[0] == element.name) {
-                        filteredTripList.push(tripList[j]);
+                    let operator = joinWordsByUnderscore(trip.bus[0]);
+                    if(operator == element.name) {
+                        if( (elementOfAc.checked && elementOfNonAc.checked) || (!elementOfAc.checked && !elementOfNonAc.checked) ) {
+                            filteredTripList.push(tripList[j]);
+                        } else if( (elementOfAc.checked && trip.bus[2]) || (elementOfNonAc.checked && !trip.bus[2]) ) {
+                            filteredTripList.push(tripList[j]);
+                        }
+
                     }
                 }
             }
-            let busTypeList = ['ac', 'nonac'];
-            for(let i = 0; i < busTypeList.length; i++) {
-                let element = document.getElementsByName(busTypeList[i])[0];
-                if(!element.checked) {
-                    continue;
-                }
-                for(let j = 0; j < tripList.length; j++)
-                {
-                    const trip = tripList[j].fields;
-                    if(trip.bus[2] == true && element.name == "ac") {
-                        filteredTripList.push(tripList[j]);
-                    } else if(trip.bus[2] == false && element.name == 'nonac') {
-                        filteredTripList.push(tripList[j]);
+            if(!isOperatorChecked) {
+                let busTypeList = ['ac', 'nonac'];
+                for(let i = 0; i < busTypeList.length; i++) {
+                    let element = document.getElementsByName(busTypeList[i])[0];
+                    if(!element.checked) {
+                        continue;
+                    }
+                    isBusTypeChecked = true;
+                    for(let j = 0; j < tripList.length; j++)
+                    {
+                        const trip = tripList[j].fields;
+                        if(trip.bus[2] == true && element.name == "ac") {
+                            filteredTripList.push(tripList[j]);
+                        } else if(trip.bus[2] == false && element.name == 'nonac') {
+                            filteredTripList.push(tripList[j]);
+                        }
                     }
                 }
             }
+
             filteredTripList =  Array.from(new Set(filteredTripList));
             if(filteredTripList.length == 0) {
-                populateTableForTrip(tripList);
+                if(isOperatorChecked || isBusTypeChecked) {
+                    populateTableForTrip(filteredTripList);
+                    myFunc(filteredTripList);// we also need to update total bus/operator count
+                    currentTripList = filteredTripList;
+                } else {
+                    populateTableForTrip(tripList);
+                    myFunc(tripList);
+                }
             } else {
                 populateTableForTrip(filteredTripList);
+                myFunc(filteredTripList);
+                currentTripList = filteredTripList;
             }
         }
+        function getClickedRowNumber(clickedRow) {
+            var table = document.getElementById("trip-table");
+            for(let i = 0; i < table.rows.length; i++) {
+                let row = table.rows[i];
+                if(row == clickedRow) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+        function demoFunction(element) {
+            let clickedRow = element.parentElement.parentElement;
+            let clickedRowNumber = getClickedRowNumber(clickedRow);
+            let trip = currentTripList[clickedRowNumber - 1].fields;
+            alert(trip.start_time + ' '+ trip.end_time);
+            //insertRowAtIndex(trip, "trip_id", 1);
+        }
+{% comment %}
+        function insertRowAtIndex(trip, trip_id, rowIndex) {
+            alert(trip);
+            if (!document.getElementsByTagName) return;
+            let tabBody = document.getElementsByTagName("tbody").item(0);
+            let row = tabBody.insertRow(rowIndex + 1);
+            row.style.marginTop = "50px";
+            let rowHtml = `
+                <td colspan="1">
+                   <ul id="seat">
+                   </ul>
+                </td>`;
+            row.innerHTML = rowHtml;
+            drawSeatPlan(trip);
+        }
+        // related to seat plan function
+        function getColumns(col_num) {
+            var columns = "12034";
+            switch(col_num) {
+                case 3:
+                    columns = "1023";
+                    break;
+                case 4:
+                    columns = "12034";
+                    break;
+                case 5:
+                    columns = "12534";
+                    break;
+                default:
+                    // nothing
+            }
+            return columns;
+        }
+        function drawSeatPlan(trip) {
+            alert(trip);
+            let num_of_rows = trip.bus[4];
+            let num_of_col = trip.bus[5];
+            let col_in_first_row = trip.bus[6];
+            let col_in_last_row = trip.bus[7];
+
+            var rows = "ABCDEFGHI";
+            if(num_of_rows == 10) {
+                rows += "J";
+            }
+
+            let uList = document.getElementById("seat");
+            for(let i = 0; i < rows.length; i++) {
+                let row = rows[i];
+                var row_html = `<li>
+                                    <ul id="seat-row">`;
+                var col_num = 4;
+                switch(i) {
+                    case 0:
+                        col_num = col_in_first_row;
+                        break;
+                    case rows.length - 1:
+                        col_num = col_in_last_row;
+                        break;
+                    default:
+                        col_num = num_of_col
+                }
+                let columns = getColumns(col_num);
+                for(let col of columns) {
+                    let _id = row + col;
+                    let col_html = `<li><button data-toggle="tooltip" data-placement="top" id=${_id} class="button"></button>
+                                    </li>`
+                    row_html += col_html;
+                    uList.innerHTML += row_html;
+                    //setColor(_id, seatInfo[id]);
+                }
+            }
+        }{% endcomment %}
     </script>
 
 {% endblock content %}
