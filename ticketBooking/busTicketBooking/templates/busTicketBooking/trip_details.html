@@ -50,6 +50,31 @@
     .u-list, #operator-list {
         list-style-type: none;
     }
+
+    #seat-row li {
+      display:inline;
+      list-style-type:none;
+    }
+    #seat li {
+        //display:inline;
+        list-style-type:none;
+    }
+    .button {
+        background-color: #ffffff;
+        border: 2px solid #101210;
+        padding: 15px 15px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+    }
+    p {
+        border: 1px solid gray;
+        background-color: #e4e7ed;
+        color: #0f0f0f;
+    }
 {% endblock css %}
 
 {% block content %}
@@ -61,7 +86,8 @@
         // seat info
         var tripSeatList = JSON.parse("{{ trip_seat_list|escapejs }}");
         str = JSON.stringify(tripSeatList, null, 4); // (Optional) beautiful indented output.
-        console.log(str)
+        console.log(str);
+        var rowNumberOfCurrentSeatPlan = 1000;
     </script>
     <div class="container-fluid">
 		<div class="container">
@@ -304,6 +330,7 @@
                 } else {
                     populateTableForTrip(tripList);
                     myFunc(tripList);
+                    currentTripList = tripList;
                 }
             } else {
                 populateTableForTrip(filteredTripList);
@@ -321,19 +348,39 @@
             }
             return -1;
         }
-        function demoFunction(element) {
-            let clickedRow = element.parentElement.parentElement;
-            let clickedRowNumber = getClickedRowNumber(clickedRow);
-            let trip = currentTripList[clickedRowNumber - 1].fields;
-            alert(trip.start_time + ' '+ trip.end_time);
-            //insertRowAtIndex(trip, "trip_id", 1);
+        function getClickedRowFrom(rowNumber) {
+            var table = document.getElementById("trip-table");
+            return table.rows[rowNumber];
         }
-{% comment %}
-        function insertRowAtIndex(trip, trip_id, rowIndex) {
-            alert(trip);
+        function demoFunction(element) {
+            var clickedRow = element.parentElement.parentElement;
+            let clickedRowNumber = getClickedRowNumber(clickedRow);
+            if(rowNumberOfCurrentSeatPlan < clickedRowNumber) {
+                clickedRowNumber -= 1;
+            }
+            var trip = currentTripList[clickedRowNumber - 1].fields;
+            var trip_id = currentTripList[clickedRowNumber - 1].pk;
+            if(clickedRow.name == undefined) {
+                populateTableForTrip(currentTripList);
+                rowNumberOfCurrentSeatPlan = clickedRowNumber;
+                clickedRow = getClickedRowFrom(clickedRowNumber);
+                clickedRow.name = "clicked-row";
+                insertRowAtIndex(trip, trip_id, clickedRowNumber);
+            } else{
+                rowNumberOfCurrentSeatPlan = 1000;
+                clickedRow.name = undefined;
+                deleteRowFromIndex(clickedRowNumber);
+            }
+        }
+        function deleteRowFromIndex(clickedRowNumber) {
             if (!document.getElementsByTagName) return;
             let tabBody = document.getElementsByTagName("tbody").item(0);
-            let row = tabBody.insertRow(rowIndex + 1);
+            tabBody.deleteRow(clickedRowNumber);
+        }
+        function insertRowAtIndex(trip, trip_id, rowIndex) {
+            if (!document.getElementsByTagName) return;
+            let tabBody = document.getElementsByTagName("tbody").item(0);
+            let row = tabBody.insertRow(rowIndex);
             row.style.marginTop = "50px";
             let rowHtml = `
                 <td colspan="1">
@@ -342,16 +389,25 @@
                 </td>`;
             row.innerHTML = rowHtml;
             drawSeatPlan(trip);
+            initializeColor(trip_id);
         }
         // related to seat plan function
-        function getColumns(col_num) {
+        function getColumns(col_num, regular_num_of_col) {
             var columns = "12034";
             switch(col_num) {
                 case 3:
-                    columns = "1023";
+                    if(regular_num_of_col == 3) {
+                        columns = "1023";
+                    } else {
+                        columns = "10034";
+                    }
                     break;
                 case 4:
-                    columns = "12034";
+                    if(regular_num_of_col == 3) {
+                        columns = "1234";
+                    } else {
+                        columns = "12034";
+                    }
                     break;
                 case 5:
                     columns = "12534";
@@ -362,9 +418,10 @@
             return columns;
         }
         function drawSeatPlan(trip) {
-            alert(trip);
+            //alert(trip);
             let num_of_rows = trip.bus[4];
             let num_of_col = trip.bus[5];
+
             let col_in_first_row = trip.bus[6];
             let col_in_last_row = trip.bus[7];
 
@@ -377,7 +434,8 @@
             for(let i = 0; i < rows.length; i++) {
                 let row = rows[i];
                 var row_html = `<li>
-                                    <ul id="seat-row">`;
+                                    <ul id="seat-row">
+                                `
                 var col_num = 4;
                 switch(i) {
                     case 0:
@@ -387,19 +445,70 @@
                         col_num = col_in_last_row;
                         break;
                     default:
-                        col_num = num_of_col
+                        col_num = num_of_col;
                 }
-                let columns = getColumns(col_num);
+                let columns = getColumns(col_num, num_of_col);
                 for(let col of columns) {
                     let _id = row + col;
-                    let col_html = `<li><button data-toggle="tooltip" data-placement="top" id=${_id} class="button"></button>
-                                    </li>`
+
+                    let col_html =  `   <li>
+                                            <button data-toggle="tooltip" data-placement="top" id=${_id} class="button"></button>
+                                        </li>
+                                    `
+
                     row_html += col_html;
-                    uList.innerHTML += row_html;
                     //setColor(_id, seatInfo[id]);
                 }
+                row_html += `
+                                    </ul>
+                                </li>
+                            `
+                uList.innerHTML += row_html;
             }
-        }{% endcomment %}
+        }
+        function setColor(id, seatType) {
+            //cnt[id] = 1;// 1 means available
+                        // 0 means you select it
+            var color;
+            var element = document.getElementById(id);
+            element.title = id ;
+            switch (seatType) {
+                case 'AVAILABLE':
+                    color = "#ffffff";
+                    element.addEventListener("click", function() {
+                        //myFunction(id);
+                    });
+                    break;
+                case 'BOOKED':
+                    color = "#e9f542";
+                    break;
+                case 'SOLD':
+                    color = "#d90804";
+                    break;
+                case 'DISABLED':
+                    color = "#59504f";
+                    break;
+                default:
+                    color = "#000000";
+            }
+            element.style.backgroundColor = color;
+        }
+        function initializeColor(trip_id) {
+            // create empty space between seat column
+            for(let row of "ABCDEFGHIJ") {
+                let id = row + "0";
+                let element = document.getElementById(id);
+                if(element)element.style.visibility = "hidden";
+            }
+
+            for(let i = 0; i <tripSeatList.length; i++) {
+                let tripSeat = tripSeatList[i].fields;
+                if(tripSeat.trip == trip_id) {
+                    setColor(tripSeat.seat_no, tripSeat.status);
+                }
+            }
+        }
+
     </script>
 
 {% endblock content %}

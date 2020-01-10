@@ -40,7 +40,8 @@ class Bus(models.Model):
         return rows
 
     def natural_key(self):
-        return (self.operator_name, self.manufacturer, self.hasAc, self.total_seat)
+        return (self.operator_name, self.manufacturer, self.hasAc, self.total_seat, self.num_of_rows,
+                self.num_of_columns, self.column_in_first_row, self.column_in_last_row)
 
     def __str__(self):
         ret = self.operator_name + ' ' + self.manufacturer + ' '
