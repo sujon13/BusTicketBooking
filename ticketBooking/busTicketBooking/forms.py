@@ -1,8 +1,16 @@
+from django.forms import ModelForm
 from django import forms
+from busTicketBooking.models import Passenger
 
 
 class NameForm(forms.Form):
     name = forms.CharField(label='Your name', max_length=100)
+
+
+class PassengerInformation(ModelForm):
+    class Meta:
+        model = Passenger
+        fields = ['name', 'gender', 'mobile', 'email']
 
 
 class SearchBus(forms.Form):
@@ -33,6 +41,3 @@ class SearchBus(forms.Form):
             attrs={'placeholder': 'Pick a date'}
         )
     )
-
-
-

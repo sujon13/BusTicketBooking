@@ -1,0 +1,77 @@
+{% extends "busTicketBooking/base.html" %}
+{% load static %}
+
+{% block title %}Trip Details{% endblock title %}
+
+{% block css %}
+{% endblock css %}
+{% block content %}
+<script>
+    let seatList = {{ seat_list|safe }};
+    function printSeatList() {
+        let element = document.getElementById("seat-no");
+        for(let i = 0; i < seatList.length; i++) {
+           element.innerText += seatList[i];
+           if(i < seatList.length - 1)element.innerText += ','
+        }
+    }
+</script>
+<div class="container-fluid">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                Passenger Information
+                <form id="passenger-info-form" action="{% url 'seat_booking' %}"  method="post"  onsubmit="addInfo()">
+                    {% csrf_token %}
+                    {{ form.errors }}
+                    {% for field in form.visible_fields %}
+                        <div class="fieldWrapper">
+                            {{ field.errors }}
+                            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                            {{ field }}
+                        </div>
+                    {% endfor %}
+                    <input type="submit" name="Confirm" value="Confirm Reservation">
+                </form>
+            </div>
+            <div class="col-md-6 text-center" >
+                <h3>Journey Details</h3>
+                <h4>{{ trip.start_station }}-{{ trip.destination }}</h4><br>
+                {{ trip.bus.operator_name }}<br>
+                {{ trip.start_time}}<br>
+                <span id="seat-no">Seat No(s):</span>
+                <script>
+                    printSeatList();
+                </script>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+function  addInfo() {
+    let form = document.getElementById("passenger-info-form");
+
+    // seat list
+    var hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = 'seat_list';
+    hiddenField.value = JSON.stringify(seatList);
+    form.appendChild(hiddenField);
+
+    // fare
+    var hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = 'total_fare';
+    hiddenField.value = '{{ total_fare }}';
+    form.appendChild(hiddenField);
+
+    // trip
+    hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = 'trip_id';
+    hiddenField.value = '{{ trip.id }}';
+    form.appendChild(hiddenField);
+}
+</script>
+{% endblock content %}

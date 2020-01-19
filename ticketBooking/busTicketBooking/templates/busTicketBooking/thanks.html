@@ -1,15 +1,14 @@
-
-{% comment %}{% extends "busTicketBooking/base.html" %}{% endcomment %}
-{% load static %}
 {% comment %}
+{% extends "busTicketBooking/base.html" %}
+{% load static %}
 {% block title %}Home{% endblock title %}
 
 {% block css %}
 
 {% endblock css %}
-{% endcomment %}
 
-{% comment %}<!DOCTYPE html>
+
+<!DOCTYPE html>
 <html>
 <head></head>
 <body>
@@ -18,7 +17,7 @@
         start: {{ trip.start_station }} des: {{ trip.destination }} date: {{ trip.start_time }} faka seat: {{ trip.seat }}
     </p>
 {% endfor %}
-</body>{% endcomment %}
+</body>
 
 <!DOCTYPE html>
 <html>
@@ -238,3 +237,4 @@ p {
 
 </body>
 </html>
+{% endcomment %}

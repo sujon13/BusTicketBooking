@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import datetime
-
+from phonenumber_field.modelfields import PhoneNumberField
 
 class Bus(models.Model):
     OPERATOR_CHOICES = [
@@ -113,3 +113,29 @@ class TripSeat(models.Model):
     def __str__(self):
         return str(self.trip) + ' ' + str(self.seat_no) + ' ' + self.status
 
+
+class Passenger(models.Model):
+    name = models.CharField(max_length=20)
+
+    GENDER_CHOICES = [
+        ('MALE', 'M'),
+        ('FEMALE', 'F'),
+        ('OTHER', 'O'),
+    ]
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES)
+
+    mobile = PhoneNumberField(null=False, blank=False, region="BD")
+    email = models.EmailField(max_length=50)
+
+
+class Reservation(models.Model):
+    trip = models.ForeignKey(Trip, on_delete=models.CASCADE)
+    passenger = models.ForeignKey(Passenger, on_delete=models.CASCADE)
+    reservation_time = models.DateTimeField(default=datetime.now)
+    num_of_booked_seat = models.IntegerField(default=1)
+    total_fare = models.IntegerField(default=0)
+
+
+class ReservationSeat(models.Model):
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    seat_no = models.CharField(max_length=10)

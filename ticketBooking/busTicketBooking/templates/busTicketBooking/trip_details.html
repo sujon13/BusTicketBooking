@@ -86,8 +86,16 @@
         // seat info
         var tripSeatList = JSON.parse("{{ trip_seat_list|escapejs }}");
         str = JSON.stringify(tripSeatList, null, 4); // (Optional) beautiful indented output.
-        console.log(str);
+        //console.log(str);
+
         var rowNumberOfCurrentSeatPlan = 1000;
+        var selectedTrip;
+        var cnt = {};
+        $(document).ready(function(){
+            $('[data-toggle="tooltip"]').tooltip({
+                trigger : 'hover'
+            });
+        });
     </script>
     <div class="container-fluid">
 		<div class="container">
@@ -353,12 +361,14 @@
             return table.rows[rowNumber];
         }
         function demoFunction(element) {
+
             var clickedRow = element.parentElement.parentElement;
             let clickedRowNumber = getClickedRowNumber(clickedRow);
             if(rowNumberOfCurrentSeatPlan < clickedRowNumber) {
                 clickedRowNumber -= 1;
             }
             var trip = currentTripList[clickedRowNumber - 1].fields;
+            selectedTrip = trip;
             var trip_id = currentTripList[clickedRowNumber - 1].pk;
             if(clickedRow.name == undefined) {
                 populateTableForTrip(currentTripList);
@@ -386,7 +396,22 @@
                 <td colspan="1">
                    <ul id="seat">
                    </ul>
-                </td>`;
+                </td>
+                <td colspan="1">
+                    <table class="table" id="selected-seat">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">Seats</th>
+                                <th scope="col">Fare</th>
+                            </tr>
+                        </thead>
+                        <tbody id="seat-status">
+                        </tbody>
+                    </table>
+                    <p id="total-fare">Total Fare: 0 Taka</p>
+                    <input type="submit" id="continue" value="continue">
+                </td>`
+
             row.innerHTML = rowHtml;
             drawSeatPlan(trip);
             initializeColor(trip_id);
@@ -457,7 +482,6 @@
                                     `
 
                     row_html += col_html;
-                    //setColor(_id, seatInfo[id]);
                 }
                 row_html += `
                                     </ul>
@@ -466,8 +490,58 @@
                 uList.innerHTML += row_html;
             }
         }
+        function addRowForSeatStatus(seat_id, fare)
+        {
+             let tabBody = document.getElementById("seat-status");
+             row=document.createElement("tr");
+             cell1 = document.createElement("td");
+             cell2 = document.createElement("td");
+             textnode1=document.createTextNode(seat_id);
+             textnode2=document.createTextNode(fare);
+             cell1.appendChild(textnode1);
+             cell2.appendChild(textnode2);
+             row.appendChild(cell1);
+             row.appendChild(cell2);
+             tabBody.appendChild(row);
+        }
+        function myFunction(id) {
+            // if 4 seats have been chosen and it is new seat no more seat can be selected
+            var table = document.getElementById("selected-seat");
+            if(table.rows.length == 5 && cnt[id] == 1) {
+                alert("You have already booked 4 seats");
+                return;
+            }
+
+            changeColor(id);
+
+            // we only add row if it is new and total selected seats is less than 4
+            // if it is new its color will be change. so now cnt[id] = 0
+            if(table.rows.length < 5 && cnt[id] == 0)addRowForSeatStatus(id, selectedTrip.fare);
+            else {
+                // we can deselect previously selected row
+                for(var i = 1; i < table.rows.length; i++) {
+                    if(table.rows[i].cells[0].innerHTML == id) {
+                        table.deleteRow(i);
+                        break;
+                    }
+                }
+            }
+            document.getElementById("total-fare").innerText = "Total Fare: " + (table.rows.length -1) * selectedTrip.fare + " Taka";
+        }
+        function changeColor(id) {
+            var element = document.getElementById(id);
+            if(cnt[id] == 1) {
+                element.style.backgroundColor = "#09eb20";// green
+                cnt[id] = 0;
+            }
+            else {
+                element.style.backgroundColor = "#ffffff";// white
+                cnt[id] = 1;
+            }
+        }
+
         function setColor(id, seatType) {
-            //cnt[id] = 1;// 1 means available
+            cnt[id] = 1;// 1 means available
                         // 0 means you select it
             var color;
             var element = document.getElementById(id);
@@ -476,7 +550,7 @@
                 case 'AVAILABLE':
                     color = "#ffffff";
                     element.addEventListener("click", function() {
-                        //myFunction(id);
+                        myFunction(id);
                     });
                     break;
                 case 'BOOKED':
@@ -507,7 +581,79 @@
                     setColor(tripSeat.seat_no, tripSeat.status);
                 }
             }
+            let continueButton = document.getElementById("continue");
+            if(continueButton) {
+                continueButton.addEventListener("click", function() {
+                    saveSeatStatus(trip_id);
+                });
+            }
         }
+        function saveSeatStatus(trip_id, method='post') {
+            var bookedSeatList = [];
+
+            var table = document.getElementById("selected-seat");
+            var fare = 0;
+            for(var i = 1; i < table.rows.length; i++) {
+                bookedSeatList.push(table.rows[i].cells[0].innerHTML);
+                fare += parseInt(table.rows[i].cells[1].innerHTML);
+            }
+
+            var form = document.createElement('form');
+            form.method = method;
+            form.action = "{% url 'seat_status' %}";
+
+            // seat list
+            var hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'seat_list';
+            hiddenField.value = JSON.stringify(bookedSeatList);
+            form.appendChild(hiddenField);
+
+            // fare
+            var hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'total_fare';
+            hiddenField.value = fare.toString();
+            form.appendChild(hiddenField);
+
+            // trip
+            hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'trip_id';
+            hiddenField.value = trip_id;
+            form.appendChild(hiddenField);
+
+            // csrf
+            hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = 'csrfmiddlewaretoken';
+            hiddenField.value = '{{ csrf_token }}'
+            form.appendChild(hiddenField);
+            document.body.appendChild(form);
+            form.submit();
+        }
+        function addPersonalInformationToHiddenForm(form) {
+            // name
+            addFieldToHiddenForm(form, 'name');
+            // gender
+            addFieldToHiddenForm(form, 'gender');
+            // mobile
+            addFieldToHiddenForm(form, 'mobile');
+            // email
+            addFieldToHiddenForm(form, 'email');
+        }
+        function addFieldToHiddenForm(form, field) {
+            let hiddenField = document.createElement('input');
+            hiddenField.type = 'hidden';
+            hiddenField.name = field;
+            hiddenField.value = document.getElementById("id_" + field).value;
+            form.appendChild(hiddenField);
+        }
+        function addHiddenFieldValue(trip_id) {
+            {% comment %}var jsForm = {{ form }};{% endcomment %}
+            document.getElementById("id_trip_id").value = trip_id;
+        }
+
 
     </script>
 
