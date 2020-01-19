@@ -6,6 +6,7 @@
 {% block css %}
     .container-fluid{
         {% comment %}background-image: url({% static 'busTicketBooking/images/bus.jpg' %});{% endcomment %}
+        {% comment %}background-color: #faf5fa;{% endcomment %}
         background-size: cover;
     }
 
@@ -59,17 +60,29 @@
         //display:inline;
         list-style-type:none;
     }
+    tr:nth-child(even) {
+          background-color: #f2f2f2;
+        }
     .button {
         background-color: #ffffff;
-        border: 2px solid #101210;
-        padding: 15px 15px;
+        border: 1px solid #101210;
+        height: 30px;
+        width: 30px;
         text-align: center;
         text-decoration: none;
         display: inline-block;
         font-size: 16px;
-        margin: 4px 2px;
         cursor: pointer;
+
     }
+    @media only screen and (max-width: 800px) {
+        .button {
+            height: 15px;
+            width: 15px;
+        }
+        * {
+            font-size: 2vw;
+        }
     p {
         border: 1px solid gray;
         background-color: #e4e7ed;
@@ -115,40 +128,40 @@
 
 			</div>
 		</div>
-	</div>
 
-	<div class="container">
-		<div class="row">
-			<div class="col-md-2" style="padding-top: 10px; padding-bottom: 20px;">
-				<span id="operator-bus-type">Operator</span><br>
-                <ul id="operator-list">
-                </ul>
-				<br>
-				<span id="operator-bus-type">Bus Type</span><br>
-				<input type="checkbox" name="ac" onclick="filterTripList()">AC<br>
-				<input type="checkbox" name="nonac" onclick="filterTripList()">Non-AC
-			</div>
-			<div class="col-md-10">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-2" style="padding-top: 10px; padding-bottom: 20px;">
+                    <span id="operator-bus-type">Operator</span><br>
+                    <ul id="operator-list">
+                    </ul>
+                    <br>
+                    <span id="operator-bus-type">Bus Type</span><br>
+                    <input type="checkbox" name="ac" onclick="filterTripList()">AC<br>
+                    <input type="checkbox" name="nonac" onclick="filterTripList()">Non-AC
+                </div>
+                <div class="col-md-10">
 
-			<table id="trip-table" class="table table-condensed">
-    			<thead>
-     				<tr style="background-color: silver;">
-        				<th >Operator(Bus Type)</th>
-        				<th >Dep. Time</th>
-        				<th >Arr. Time</th>
-        				<th >Available seats</th>
-        				<th >Fare</th>
-      				</tr>
-    			</thead>
-    			<tbody>
-			    </tbody>
-			</table>
+                <table id="trip-table" class="table table-condensed">
+                    <thead>
+                        <tr style="background-color: silver;">
+                            <th >Operator(Bus Type)</th>
+                            <th >Dep. Time</th>
+                            <th >Arr. Time</th>
+                            <th >Available seats</th>
+                            <th >Fare</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
 
 
-			</div>
+                </div>
 
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
     <script>
         function myFunc(tripList) {
             // total bus
@@ -393,14 +406,30 @@
             let row = tabBody.insertRow(rowIndex);
             row.style.marginTop = "50px";
             let rowHtml = `
-                <td colspan="1">
+                <td colspan="1" style="padding-left:10px">
                    <ul id="seat">
                    </ul>
                 </td>
-                <td colspan="1">
+                <td colspan="3">
+                    <table>
+                        <tr>
+                            <td><input type="button" class="button"></td>
+                            <td style="padding-left: 5px;">Available</td>
+
+                            <td style="padding-left: 20px;"><input type="button" class="button" style="background-color:#e79ff5"></td>
+                            <td style="padding-left: 5px;">Booked</td>
+
+                            <td style="padding-left: 20px;"><input type="button" class="button" style="background-color:#c76708"></td>
+                            <td style="padding-left: 5px;">Sold</td>
+
+                            <td style="padding-left: 20px;"><input type="button" class="button" style="background-color:#b5b4b3"></td>
+                            <td style="padding-left: 5px;">Disabled</td>
+
+                        </tr>
+                    </table>
                     <table class="table" id="selected-seat">
                         <thead class="thead-dark">
-                            <tr>
+                            <tr style="background-color: #e9e1eb">
                                 <th scope="col">Seats</th>
                                 <th scope="col">Fare</th>
                             </tr>
@@ -408,13 +437,22 @@
                         <tbody id="seat-status">
                         </tbody>
                     </table>
-                    <p id="total-fare">Total Fare: 0 Taka</p>
-                    <input type="submit" id="continue" value="continue">
+                    <p id="total-fare" style="background-color: #e9e1eb">Total Fare: 0 Taka</p>
+                    <input type="submit" style="color:white" id="continue" value="continue">
+                </td>
+                <td align="right">
+                    <button type="button" data-toggle="tooltip" data-placement="top" title="click me to close" id=close" onClick="closeSeatPlan(${rowIndex})">close
                 </td>`
 
             row.innerHTML = rowHtml;
             drawSeatPlan(trip);
             initializeColor(trip_id);
+        }
+        function closeSeatPlan(rowIndex) {
+            if (!document.getElementsByTagName) return;
+            let tabBody = document.getElementsByTagName("tbody").item(0);
+            tabBody.deleteRow(rowIndex);
+            populateTableForTrip(currentTripList);
         }
         // related to seat plan function
         function getColumns(col_num, regular_num_of_col) {
@@ -477,9 +515,10 @@
                     let _id = row + col;
 
                     let col_html =  `   <li>
-                                            <button data-toggle="tooltip" data-placement="top" id=${_id} class="button"></button>
+                                            <button data-toggle="tooltip" data-placement="top" title= ${_id} id=${_id} class="button"></button>
                                         </li>
                                     `
+
 
                     row_html += col_html;
                 }
@@ -531,7 +570,7 @@
         function changeColor(id) {
             var element = document.getElementById(id);
             if(cnt[id] == 1) {
-                element.style.backgroundColor = "#09eb20";// green
+                element.style.backgroundColor = "green";// green
                 cnt[id] = 0;
             }
             else {
@@ -545,7 +584,7 @@
                         // 0 means you select it
             var color;
             var element = document.getElementById(id);
-            element.title = id ;
+            //element.title = id ;
             switch (seatType) {
                 case 'AVAILABLE':
                     color = "#ffffff";
@@ -554,13 +593,13 @@
                     });
                     break;
                 case 'BOOKED':
-                    color = "#e9f542";
+                    color = "#e79ff5";
                     break;
                 case 'SOLD':
-                    color = "#d90804";
+                    color = "#c76708";
                     break;
                 case 'DISABLED':
-                    color = "#59504f";
+                    color = "#b5b4b3";
                     break;
                 default:
                     color = "#000000";
