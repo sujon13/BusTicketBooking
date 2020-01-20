@@ -96,7 +96,8 @@ def get_trip_seat_list(trip_list):
 
 def seat_status(request):
     try:
-        update_seat_status(request)
+        #update_seat_status(request)
+        print('update')
     except:
         print("error occurred in updating seat status")
     finally:
@@ -122,14 +123,14 @@ def seat_booking(request):
 
         # save personal info
         passenger = get_passenger_info(form)
-        passenger.save()
+        #passenger.save()
 
         # save reservation info
         reservation = get_reservation_info(request, passenger, seat_list)
-        reservation.save()
+        #reservation.save()
 
         # save reservation seat info
-        save_reserved_seat_info(reservation, seat_list)
+        #save_reserved_seat_info(reservation, seat_list)
         return render(request, 'busTicketBooking/home.html')
     else:
 
