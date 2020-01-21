@@ -1,9 +1,16 @@
 {% extends "busTicketBooking/base.html" %}
 {% load static %}
 
-{% block title %}Trip Details{% endblock title %}
+{% block title %}Seat Booking{% endblock title %}
 
 {% block css %}
+    #payment {
+        background-color: green;
+        color: white;
+        width: auto;
+        height: 30px;
+
+    }
 {% endblock css %}
 {% block content %}
 <script>
@@ -23,7 +30,7 @@
                 Passenger Information
                 <form id="passenger-info-form" action="{% url 'seat_booking' %}"  method="post"  onsubmit="addInfo()">
                     {% csrf_token %}
-                    {{ form.errors }}
+                    {{ form.non_field_errors}}
                     {% for field in form.visible_fields %}
                         <div class="fieldWrapper">
                             {{ field.errors }}
@@ -31,7 +38,6 @@
                             {{ field }}
                         </div>
                     {% endfor %}
-                    <input type="submit" style="color:white" name="Confirm" value="Confirm Reservation">
                 </form>
             </div>
             <div class="col-md-6 text-center" >
@@ -46,6 +52,61 @@
                 <br>
             </div>
         </div>
+    </div>
+    <div class="container">
+        <div class="row">
+           <div class="col-md-4">
+               <div class="align-middle" id="payment">Payment Details</div>
+               <h5>Fare Details</h5>
+               <table id="fare-table" class="table table-condensed">
+                   <tbody>
+                       <tr>
+                           <td>
+                               Ticket Price
+                           </td>
+                           <td>
+                               {{ total_fare }}
+                           </td>
+                       </tr>
+                       <tr>
+                           <td>
+                               Website Fee
+                           </td>
+                           <td id="website-fee">
+                           </td>
+                           <script>
+                               $('#website-fee').text(seatList.length * 10);
+                           </script>
+                       </tr>
+                       <tr>
+                           <td>
+                               Processing Fee
+                           </td>
+                           <td id="processing-fee">
+                           </td>
+                           <script>
+                               $('#processing-fee').text(seatList.length * 5);
+                           </script>
+                       </tr>
+                       <tr>
+                           <td>
+                               Total
+                           </td>
+                           <td id="total-amount">
+                           </td>
+                               <script>
+                                   let websiteFee = $('#website-fee').text();
+                                   let processingFee = $('#processing-fee').text();
+                                   let otherFee = parseInt(websiteFee.toString()) + parseInt(processingFee.toString());
+                                   $('#total-amount').text({{ total_fare }} + otherFee);
+                               </script>
+                           </td>
+                       </tr>
+                   </tbody>
+               </table>
+           </div>
+        </div>
+        <input type="submit" style="color:white" id="Confirm" value="Confirm Reservation" onclick="addInfo()">
     </div>
 </div>
 <script>
@@ -66,12 +127,25 @@ function  addInfo() {
     hiddenField.value = '{{ total_fare }}';
     form.appendChild(hiddenField);
 
+     // payable fee
+    var hiddenField = document.createElement('input');
+    hiddenField.type = 'hidden';
+    hiddenField.name = 'total_payable_fee';
+    hiddenField.value = $('#total-amount').text().toString();
+    form.appendChild(hiddenField);
+
     // trip
     hiddenField = document.createElement('input');
     hiddenField.type = 'hidden';
     hiddenField.name = 'trip_id';
     hiddenField.value = '{{ trip.id }}';
     form.appendChild(hiddenField);
+
+    submitForm();
+}
+function submitForm() {
+    let form = document.getElementById("passenger-info-form");
+    form.submit();
 }
 </script>
 {% endblock content %}

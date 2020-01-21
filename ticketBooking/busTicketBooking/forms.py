@@ -11,6 +11,11 @@ class PassengerInformation(ModelForm):
     class Meta:
         model = Passenger
         fields = ['name', 'gender', 'mobile', 'email']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter name'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Enter email'}),
+            'mobile': forms.NumberInput(attrs={'placeholder': 'Enter mobile no'})
+        }
 
 
 class SearchBus(forms.Form):

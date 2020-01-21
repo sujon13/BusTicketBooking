@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.core.serializers import serialize
 from rest_framework import serializers
+from twilio.rest import Client
 
 from django.http import HttpResponseRedirect, HttpResponse
 import json
@@ -96,7 +97,7 @@ def get_trip_seat_list(trip_list):
 
 def seat_status(request):
     try:
-        #update_seat_status(request)
+        update_seat_status(request)
         print('update')
     except:
         print("error occurred in updating seat status")
@@ -123,14 +124,17 @@ def seat_booking(request):
 
         # save personal info
         passenger = get_passenger_info(form)
-        #passenger.save()
+        passenger.save()
 
         # save reservation info
         reservation = get_reservation_info(request, passenger, seat_list)
-        #reservation.save()
+        reservation.save()
 
         # save reservation seat info
-        #save_reserved_seat_info(reservation, seat_list)
+        save_reserved_seat_info(reservation, seat_list)
+
+        # send sms(text message) to passenger with reservation info
+        send_sms_to_passenger(request, passenger.mobile, reservation)
         return render(request, 'busTicketBooking/home.html')
     else:
 
@@ -149,7 +153,7 @@ def seat_booking(request):
 
 def get_reservation_info(request, passenger, seat_list):
     num_of_booked_seat = len(seat_list)
-    total_fare = int(request.POST.get('total_fare'))
+    total_payable_fee = int(request.POST.get('total_payable_fee'))
     trip_id = request.POST.get('trip_id')
     trip = Trip.objects.get(pk=trip_id)
     reservation = Reservation(
@@ -157,7 +161,7 @@ def get_reservation_info(request, passenger, seat_list):
         passenger=passenger,
         reservation_time=datetime.now(),
         num_of_booked_seat=num_of_booked_seat,
-        total_fare=total_fare
+        total_fare=total_payable_fee
     )
     return reservation
 
@@ -196,6 +200,33 @@ def save_reserved_seat_info(reservation, seat_list):
             seat_no=seat
         )
         reserved_seat.save()
+
+
+def send_sms_to_passenger(request, mobile, reservation):
+    # Your Account Sid and Auth Token from twilio.com/console
+    # DANGER! This is insecure. See http://twil.io/secure
+    account_sid = 'AC94bf58b42dfc88ce7a5ff6d01cbbf4ea'
+    auth_token = 'af7ab3de8a20e70fd4cc90f173a2026b'
+    client = Client(account_sid, auth_token)
+
+    message = client.messages.create(
+        body=get_sms_body(request, reservation),
+        from_='+13143154321',
+        status_callback='http://postb.in/1579633992227-6009777227882',
+        to=str(mobile)
+    )
+    print(message.status)
+    print(message.sid)
+
+
+def get_sms_body(request, reservation):
+    trip_id = request.POST.get('trip_id')
+    trip = Trip.objects.get(pk=trip_id)
+    sms_body = 'bKash Reservation Confirmation ' + trip.start_station.capitalize()\
+               + ' to ' + trip.destination.capitalize()
+    sms_body += '. Reservation Reference: ' + str(reservation.id * 10)
+    sms_body += '. Please confirm bKash Payment of BDT. ' + str(reservation.total_fare) + ' within 20 minutes'
+    return sms_body
 
 
 """
