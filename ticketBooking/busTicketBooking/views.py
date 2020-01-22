@@ -4,6 +4,7 @@ from rest_framework import serializers
 from twilio.rest import Client
 
 from django.http import HttpResponseRedirect, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 import json
 from .models import Bus, Trip, Seat, TripSeat, Passenger, Reservation, ReservationSeat
 from .forms import SearchBus, PassengerInformation
@@ -135,9 +136,10 @@ def seat_booking(request):
 
         # send sms(text message) to passenger with reservation info
         send_sms_to_passenger(request, passenger.mobile, reservation)
+        print('valid!!!')
         return render(request, 'busTicketBooking/home.html')
     else:
-
+        print('invalid!!')
         total_fare = request.POST.get('total_fare')
         trip_id = request.POST.get('trip_id')
         trip = Trip.objects.get(pk=trip_id)
@@ -212,10 +214,9 @@ def send_sms_to_passenger(request, mobile, reservation):
     message = client.messages.create(
         body=get_sms_body(request, reservation),
         from_='+13143154321',
-        status_callback='http://postb.in/1579633992227-6009777227882',
+        status_callback='https://d361e169.ngrok.io/busTicketBooking/seat_booking/sms-status/',
         to=str(mobile)
     )
-    print(message.status)
     print(message.sid)
 
 
@@ -228,6 +229,19 @@ def get_sms_body(request, reservation):
     sms_body += '. Please confirm bKash Payment of BDT. ' + str(reservation.total_fare) + ' within 20 minutes'
     return sms_body
 
+
+@csrf_exempt
+def sms_status(request):
+    print('in here!')
+    SmsSid = request.POST.get('SmsSid')
+    SmsStatus = request.POST.get('SmsStatus')
+    To = request.POST.get('To')
+    if SmsStatus == 'sent' or SmsStatus == 'delivered':
+        print('successfully sent message')
+    else:
+        print('Error occurred. Steps need to be taken')
+
+    return render(request, 'busTicketBooking/home.html')
 
 """
 def get_station(request):
