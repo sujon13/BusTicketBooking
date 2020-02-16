@@ -10,4 +10,6 @@ urlpatterns = [
     # path('thanks/', views.thanks, name='thanks'),
     # path('api/get_station/', views.get_station, name='get_station'),
     path('seat_booking/sms-status/', views.sms_status, name='sms_status'),
+    path('seat_booking/success/', views.success, name='success'),
+    path('seat_booking/validate_payment/', views.validate_payment, name='validate_payment'),
 ]

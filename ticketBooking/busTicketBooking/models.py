@@ -140,3 +140,15 @@ class Reservation(models.Model):
 class ReservationSeat(models.Model):
     reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
     seat_no = models.CharField(max_length=10)
+
+
+class Payment(models.Model):
+    reservation = models.ForeignKey(Reservation, on_delete=models.CASCADE)
+    payment_status = models.CharField(max_length=20)  # VALID/ VALIDATED/ INVALID_TRANSACTION
+    transaction_id = models.CharField(max_length=50, unique=True)
+    total_amount = models.IntegerField(default=0)
+    session_key = models.CharField(max_length=50, unique=True)
+    card_brand = models.CharField(max_length=30)  # visa/ mobile banking
+    card_type = models.CharField(max_length=50)  # bkash/ dutch bangla back/ city bank
+    card_no = models.IntegerField(default=0)  # debit/ credit card number
+

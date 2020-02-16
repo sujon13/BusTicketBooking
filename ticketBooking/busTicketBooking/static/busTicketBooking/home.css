@@ -1,23 +1,4 @@
 *{margin:0px; padding: 0px; }
-body{}
-    body{
-  background-image: url("../images/bus2.jpg"); 
-  }
-/*.jumbotron-background {
-    object-fit:cover;
-    font-family: 'object-fit: cover;';
-    position:absolute;
-    top:0;
-    z-index:0;
-    width:100%;
-    opacity:1;
-}
-img.blur {
-    -webkit-filter: blur(4px);
-    filter: blur(4px);
-    filter:progid:DXImageTransform.Microsoft.Blur(PixelRadius='4');
-
-}*/
 
 .container{
     padding-top: 5%;

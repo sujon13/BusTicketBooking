@@ -83,6 +83,16 @@
         * {
             font-size: 2vw;
         }
+    }
+    @media only screen and (max-width: 300px) {
+        .button {
+            height: 8px;
+            width: 8px;
+        }
+        * {
+            font-size: 2vw;
+        }
+    }
     p {
         border: 1px solid gray;
         background-color: #e4e7ed;
@@ -406,7 +416,7 @@
             let row = tabBody.insertRow(rowIndex);
             row.style.marginTop = "50px";
             let rowHtml = `
-                <td colspan="1" style="padding-left:10px">
+                <td colspan="2" style="padding-left:10px">
                    <ul id="seat">
                    </ul>
                 </td>

@@ -94,13 +94,13 @@
                            </td>
                            <td id="total-amount">
                            </td>
-                               <script>
-                                   let websiteFee = $('#website-fee').text();
-                                   let processingFee = $('#processing-fee').text();
-                                   let otherFee = parseInt(websiteFee.toString()) + parseInt(processingFee.toString());
-                                   $('#total-amount').text({{ total_fare }} + otherFee);
-                               </script>
-                           </td>
+                           <script>
+                               let websiteFee = $('#website-fee').text();
+                               let processingFee = $('#processing-fee').text();
+                               let otherFee = parseInt(websiteFee.toString()) + parseInt(processingFee.toString());
+                               let totalFee = {{ total_fare }} + otherFee;
+                               $('#total-amount').text(totalFee);
+                           </script>
                        </tr>
                    </tbody>
                </table>

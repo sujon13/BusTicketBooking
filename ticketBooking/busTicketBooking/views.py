@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.serializers import serialize
 from rest_framework import serializers
 from twilio.rest import Client
+from sslcommerz_lib import SSLCOMMERZ
 
 from django.http import HttpResponseRedirect, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -125,19 +126,22 @@ def seat_booking(request):
 
         # save personal info
         passenger = get_passenger_info(form)
-        passenger.save()
+        #passenger.save()
 
         # save reservation info
         reservation = get_reservation_info(request, passenger, seat_list)
-        reservation.save()
+        #reservation.save()
 
         # save reservation seat info
-        save_reserved_seat_info(reservation, seat_list)
+        #save_reserved_seat_info(reservation, seat_list)
 
         # send sms(text message) to passenger with reservation info
-        send_sms_to_passenger(request, passenger.mobile, reservation)
-        print('valid!!!')
-        return render(request, 'busTicketBooking/home.html')
+        # send_sms_to_passenger(request, passenger.mobile, reservation)
+        # need to pay
+        redirectUrl = pay()
+        return redirect(redirectUrl)
+        #print('valid!!!')
+        #return render(request, 'busTicketBooking/home.html')
     else:
         print('invalid!!')
         total_fare = request.POST.get('total_fare')
@@ -242,6 +246,64 @@ def sms_status(request):
         print('Error occurred. Steps need to be taken')
 
     return render(request, 'busTicketBooking/home.html')
+
+
+def pay():
+    settings = {'store_id': 'petpr5e280f2f4499c', 'store_pass': 'petpr5e280f2f4499c@ssl', 'issandbox': True}
+    sslcommez = SSLCOMMERZ(settings)
+
+    post_body = {}
+    post_body['total_amount'] = 1.00
+    post_body['currency'] = "BDT"
+    post_body['tran_id'] = "12345"
+    post_body['success_url'] = "https://ca75787b.ngrok.io/busTicketBooking/seat_booking/success/"
+    post_body['fail_url'] = "https://ca75787b.ngrok.io/busTicketBooking/seat_booking/success/"
+    post_body['cancel_url'] = "https://ca75787b.ngrok.io/busTicketBooking/seat_booking/success/"
+    post_body['emi_option'] = 0
+    post_body['cus_name'] = "test"
+    post_body['cus_email'] = "test@test.com"
+    post_body['cus_phone'] = "01762700280"
+    post_body['cus_add1'] = "customer address"
+    post_body['cus_city'] = "Dhaka"
+    post_body['cus_country'] = "Bangladesh"
+    post_body['shipping_method'] = "NO"
+    post_body['ship_name'] = "testpetpr862r"
+    post_body['multi_card_name'] = ""
+    post_body['num_of_item'] = 1
+    post_body['product_name'] = "Test"
+    post_body['product_category'] = "Test Category"
+    post_body['product_profile'] = "general"
+
+    response = sslcommez.createSession(post_body)
+    print(response['GatewayPageURL'])
+    return response['GatewayPageURL']
+
+
+@csrf_exempt
+def success(request):
+    return render(request, 'busTicketBooking/success.html')
+
+
+@csrf_exempt
+def validate_payment(request):
+    print('notification comes!')
+    status = request.POST.get('status')
+    val_id = request.POST.get('val_id')
+    amount = request.POST.get('amount')
+    print(status)
+    print(amount)
+    # validation
+    settings = {'store_id': 'petpr5e280f2f4499c', 'store_pass': 'petpr5e280f2f4499c@ssl', 'issandbox': True}
+    sslcommez = SSLCOMMERZ(settings)
+
+    post_body = {}
+    post_body['val_id'] = val_id
+    post_body['store_id'] = settings['store_id']
+    post_body['store_password'] = settings['store_pass']
+    response = sslcommez.hash_validate_ipn(post_body)
+    print(response)
+    return render(request, 'busTicketBooking/home.html')
+
 
 """
 def get_station(request):
