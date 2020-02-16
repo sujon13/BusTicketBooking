@@ -3,15 +3,44 @@
 
 {% block title %}Seat Booking{% endblock title %}
 
-{% block css %}
-    #payment {
+{% block css%}
+{%endblock css %}
+<style type="text/css">
+
+    {% comment %}.container{
+        margin
+    }{% endcomment %}
+    #passenger-info {
         background-color: green;
         color: white;
         width: auto;
         height: 30px;
-
+        line-height: 30px;
+        padding-left: 10px;
+        font-weight: bold;
     }
-{% endblock css %}
+
+    #id_name, #id_gender, #id_mobile, #id_email{
+        width: 100%;
+        padding: 5px 10px;
+        margin: 1px 0;
+        box-sizing: border-box;
+        color: #000000;
+    }
+
+    .contain-form{
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0, 0.4);
+        border:1px solid rgba(0,0,0,0.1);
+        border-bottom-left-radius:3px;
+        border-bottom-right-radius:3px;
+        color: white;
+        padding-top: 10px;
+        padding-bottom: 12px;
+    }
+
+</style>
+
 {% block content %}
 <script>
     let seatList = {{ seat_list|safe }};
@@ -27,18 +56,20 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                Passenger Information
-                <form id="passenger-info-form" action="{% url 'seat_booking' %}"  method="post"  onsubmit="addInfo()">
-                    {% csrf_token %}
-                    {{ form.non_field_errors}}
-                    {% for field in form.visible_fields %}
-                        <div class="fieldWrapper">
-                            {{ field.errors }}
-                            <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
-                            {{ field }}
-                        </div>
-                    {% endfor %}
-                </form>
+                <div id="passenger-info">Passenger Information</div>
+                <div class="contain-form">
+                    <form id="passenger-info-form" action="{% url 'seat_booking' %}"  method="post"  onsubmit="addInfo()">
+                        {% csrf_token %}
+                        {{ form.non_field_errors}}
+                        {% for field in form.visible_fields %}
+                            <div class="fieldWrapper">
+                                {{ field.errors }}
+                                <label for="{{ field.id_for_label }}">{{ field.label }}:</label>
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                    </form>
+                </div>
             </div>
             <div class="col-md-6 text-center" >
                 <h3>Journey Details</h3>
@@ -55,10 +86,15 @@
     </div>
     <div class="container">
         <div class="row">
-           <div class="col-md-4">
-               <div class="align-middle" id="payment">Payment Details</div>
-               <h5>Fare Details</h5>
+           <div class="col-md-6">
+               <!--<div class="align-middle" id="payment">Fare Details</div>-->
                <table id="fare-table" class="table table-condensed">
+                    <thead>
+                       <tr style="background-color: green; color: white;">
+                           <th>Fare Details</th>
+                           <th>Amount (TK)</th>
+                       </tr>
+                   </thead>
                    <tbody>
                        <tr>
                            <td>
@@ -68,7 +104,7 @@
                                {{ total_fare }}
                            </td>
                        </tr>
-                       <tr>
+                        <tr class="active">
                            <td>
                                Website Fee
                            </td>
@@ -88,11 +124,11 @@
                                $('#processing-fee').text(seatList.length * 5);
                            </script>
                        </tr>
-                       <tr>
+                       <tr class="active">
                            <td>
                                Total
                            </td>
-                           <td id="total-amount">
+                           <td id="total-amount" style="font-size: 18px; color: red;">
                            </td>
                            <script>
                                let websiteFee = $('#website-fee').text();
@@ -106,7 +142,9 @@
                </table>
            </div>
         </div>
-        <input type="submit" style="color:white" id="Confirm" value="Confirm Reservation" onclick="addInfo()">
+        <div style="text-align: center;">
+        <input type="submit" style="color:white; width: 400px; background-color: #fc1408; border-style: outset;" id="Confirm" value="Confirm Reservation" onclick="addInfo()">
+        </div>
     </div>
 </div>
 <script>

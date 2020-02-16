@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fc634eea-9d28-456e-8983-c07298c0f1ab" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/success.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/busTicketBooking/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/busTicketBooking/static/busTicketBooking/home.css" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/static/busTicketBooking/home.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/seat_booking.html" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/seat_booking.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.html" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/busTicketBooking/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/busTicketBooking/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/busTicketBooking/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/db.sqlite3" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -69,11 +62,23 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="serializers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/busTicketBooking/serializers.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="462">
               <caret line="23" column="17" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="seat_booking.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/seat_booking.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="308">
+              <caret line="126" column="23" selection-start-line="126" selection-start-column="23" selection-end-line="126" selection-end-column="23" />
+              <folding>
+                <element signature="e#2966#3012#0#HTML" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -152,11 +157,11 @@
         <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/success.html" />
         <option value="$PROJECT_DIR$/busTicketBooking/urls.py" />
         <option value="$PROJECT_DIR$/busTicketBooking/views.py" />
-        <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/seat_booking.html" />
         <option value="$PROJECT_DIR$/busTicketBooking/models.py" />
         <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.html" />
         <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/trip_details.css" />
         <option value="$PROJECT_DIR$/busTicketBooking/static/busTicketBooking/home.css" />
+        <option value="$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/seat_booking.html" />
       </list>
     </option>
   </component>
@@ -305,6 +310,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="12" sideWeight="0.50073206" side_tool="true" weight="0.22893482" />
@@ -643,13 +649,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/seat_booking.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2222">
-          <caret line="101" column="63" selection-start-line="101" selection-start-column="63" selection-end-line="101" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/busTicketBooking/models.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3190">
@@ -717,6 +716,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="462">
           <caret line="23" column="17" selection-start-line="23" selection-start-column="17" selection-end-line="23" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/busTicketBooking/templates/busTicketBooking/seat_booking.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="126" column="23" selection-start-line="126" selection-start-column="23" selection-end-line="126" selection-end-column="23" />
+          <folding>
+            <element signature="e#2966#3012#0#HTML" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
